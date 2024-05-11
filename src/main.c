@@ -16,13 +16,13 @@ int incX = 1, incY = 1;
 
 void printHello(int nextX, int nextY)
 {
-    screenSetColor(CYAN, DARKGRAY);
+    screenSetColor(RED, DARKGRAY);
     screenGotoxy(x, y);
-    printf("           ");
+    printf("    ");
     x = nextX;
     y = nextY;
     screenGotoxy(x, y);
-    printf("Hello World");
+    printf("🔴");
 }
 
 void printKey(int ch)
@@ -69,7 +69,7 @@ int main()
         if (timerTimeOver() == 1)
         {
             int newX = x + incX;
-            if (newX >= (MAXX -strlen("Hello World") -1) || newX <= MINX+1) incX = -incX;
+            if (newX >= (MAXX -strlen("🔴")-1) || newX <= MINX+1) incX = -incX;
             int newY = y + incY;
             if (newY >= MAXY-1 || newY <= MINY+1) incY = -incY;
 

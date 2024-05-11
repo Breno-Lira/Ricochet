@@ -14,7 +14,7 @@ static struct termios initialSettings, newSettings;
 static int peekCharacter;
 
 
-void keyboardInit()
+void keyboardInit() //Esta função inicializa as configurações do teclado
 {
     tcgetattr(0,&initialSettings);
     newSettings = initialSettings;
@@ -26,12 +26,13 @@ void keyboardInit()
     tcsetattr(0, TCSANOW, &newSettings);
 }
 
-void keyboardDestroy()
+void keyboardDestroy() //Esta função restaura as configurações originais do teclado que foram salvas em initialSettings pela função keyboardInit(). Usa tcsetattr() para fazer isso.
+
 {
     tcsetattr(0, TCSANOW, &initialSettings);
 }
 
-int keyhit()
+int keyhit() //Esta função verifica se uma tecla foi pressionada.
 {
     unsigned char ch;
     int nread;
@@ -53,7 +54,7 @@ int keyhit()
     return 0;
 }
 
-int readch()
+int readch() //Esta função lê um caractere do teclado.
 {
     char ch;
 
