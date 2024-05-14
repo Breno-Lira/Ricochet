@@ -14,7 +14,7 @@
 int x = 34, y = 12;
 int incX = 1, incY = 1;
 
-void printHello(int nextX, int nextY)
+void printBall(int nextX, int nextY)
 {
     screenSetColor(RED, DARKGRAY);
     screenGotoxy(x, y);
@@ -52,7 +52,7 @@ int main()
     keyboardInit();
     timerInit(50);
 
-    printHello(x, y);
+    printBall(x, y);
     screenUpdate();
 
     while (ch != 10) //enter
@@ -74,7 +74,7 @@ int main()
             if (newY >= MAXY-1 || newY <= MINY+1) incY = -incY;
 
             printKey(ch);
-            printHello(newX, newY);
+            printBall(newX, newY);
 
             screenUpdate();
         }
