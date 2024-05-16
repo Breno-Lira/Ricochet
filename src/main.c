@@ -11,6 +11,10 @@
 #include "keyboard.h"
 #include "timer.h"
 
+#define BAR_MIN_X       10
+#define BAR_MAX_X       30
+#define BAR_Y           MAXY - 1
+
 int x = 34, y = 12;
 int incX = 1, incY = 1;
 
@@ -25,9 +29,20 @@ void printBall(int nextX, int nextY)
     printf("🔴");
 }
 
-void printBarra(){
-    
+void printBarra() {
+    screenSetColor(WHITE, DARKGRAY);
+    for (int i = BAR_MIN_X; i <= BAR_MAX_X; i++) {
+        screenGotoxy(i, BAR_Y);
+        printf("=");
+    }
 }
+// void printBarra(){
+//     screenSetColor(WHITE, DARKGRAY);
+//     screenGotoxy(x, y);
+//     printf("         ");
+//     screenGotoxy(x, y);
+//     printf("[=======]");
+// }
 
 // void printKey(int ch)
 // {
@@ -57,6 +72,7 @@ int main()
     timerInit(50);
 
     printBall(x, y);
+    printBarra();
     screenUpdate();
 
     while (ch != 10) //enter
@@ -70,13 +86,18 @@ int main()
         // }
 
         // Update game state (move elements, verify collision, etc)
+
         if (timerTimeOver() == 1)
         {
             int newX = x + incX;
             if (newX >= (MAXX -strlen("🔴")-1) || newX <= MINX+1) incX = -incX;
             int newY = y + incY;
             if (newY >= MAXY-1 || newY <= MINY+1) incY = -incY;
-
+            
+            if (newY == BAR_Y-1 && (newX >= BAR_MIN_X-2 && newX <= BAR_MAX_X+2)) {
+                incY = -incY;  // Inverte a direção vertical da bola
+            }  
+            
             //printKey(ch);
             printBall(newX, newY);
 
