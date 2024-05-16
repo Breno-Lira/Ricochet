@@ -25,24 +25,28 @@ void printBall(int nextX, int nextY)
     printf("🔴");
 }
 
-void printKey(int ch)
-{
-    screenSetColor(YELLOW, DARKGRAY);
-    screenGotoxy(35, 22);
-    printf("Key code :");
-
-    screenGotoxy(34, 23);
-    printf("            ");
+void printBarra(){
     
-    if (ch == 27) screenGotoxy(36, 23);
-    else screenGotoxy(39, 23);
-
-    printf("%d ", ch);
-    while (keyhit())
-    {
-        printf("%d ", readch());
-    }
 }
+
+// void printKey(int ch)
+// {
+//     screenSetColor(YELLOW, DARKGRAY);
+//     screenGotoxy(35, 22);
+//     printf("Key code :");
+
+//     screenGotoxy(34, 23);
+//     printf("            ");
+    
+//     if (ch == 27) screenGotoxy(36, 23);
+//     else screenGotoxy(39, 23);
+
+//     printf("%d ", ch);
+//     while (keyhit())
+//     {
+//         printf("%d ", readch());
+//     }
+// }
 
 int main() 
 {
@@ -58,12 +62,12 @@ int main()
     while (ch != 10) //enter
     {
         // Handle user input
-        if (keyhit()) 
-        {
-            ch = readch();
-            printKey(ch);
-            screenUpdate();
-        }
+        // if (keyhit()) 
+        // {
+        //     ch = readch();
+        //     printKey(ch);
+        //     screenUpdate();
+        // }
 
         // Update game state (move elements, verify collision, etc)
         if (timerTimeOver() == 1)
@@ -73,7 +77,7 @@ int main()
             int newY = y + incY;
             if (newY >= MAXY-1 || newY <= MINY+1) incY = -incY;
 
-            printKey(ch);
+            //printKey(ch);
             printBall(newX, newY);
 
             screenUpdate();
