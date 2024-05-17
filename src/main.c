@@ -10,14 +10,25 @@ int BAR_MAX_X = 46;
 int BAR_Y = MAXY - 1;
 
 int x = 40, y = 21;
-int incX = 1, incY = 1;
+int incX = 1, incY = -1;
 
 bool game_over = false;
 
 void telaInicial() {
-    screenGotoxy(37, 10);
+    screenGotoxy(15, 3);
     screenSetColor(WHITE, DARKGRAY);
-    printf("RICOCHET");
+    printf(" ____   _____  ____   ___    ____ _    _  _____  _____");
+    screenGotoxy(15, 4);
+    printf("|  _ \\ |_   _|/ ___| / _ \\  / ___| |  | || ____||_   _|");
+    screenGotoxy(15, 5);
+    printf("| |_) |  | | | |    | | | || |   | |__| || |_     | |");
+    screenGotoxy(15, 6);
+    printf("|  _ <   | | | |    | | | || |   |  __  ||  _|    | |");
+    screenGotoxy(15, 7);
+    printf("| | | | _| |_| |___ | |_| || |___| |  | || |___   | |");
+    screenGotoxy(15, 8);
+    printf("|_| |_||_____ \\____| \\___/  \\____|_|  |_||_____|  |_|");
+
     screenGotoxy(27, 11);
     printf("Pressione ESPACO para inicar!");
     screenUpdate();
@@ -143,6 +154,7 @@ int main()
 
                 if (newY == BAR_Y-1 && (newX >= BAR_MIN_X-2 && newX <= BAR_MAX_X+2)) {
                     incY = -incY;
+                    
                 }
                 
                 printBall(newX, newY);
