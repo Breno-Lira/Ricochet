@@ -148,12 +148,12 @@ void printScore(){
     int cont_score = 0;
     for(int l=0; l<6; l++){
         for(int c=0; c<8; c++){
-            if(blocos[l][c] == 1){
+            if(blocos[l][c] == 0){
                 cont_score = cont_score +  50;
             }
         }
     }
-    printf("Score: %d", 2400-cont_score);
+    printf("Score: %d", cont_score);
 }
 
 int main() 
