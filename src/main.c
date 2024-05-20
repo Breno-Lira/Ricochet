@@ -14,6 +14,15 @@ int incX = 1, incY = -1;
 
 bool game_over = false;
 
+int blocos[6][8] = {
+    {1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1}
+};
+
 void telaInicial() {
     screenGotoxy(15, 3);
     screenSetColor(WHITE, DARKGRAY);
@@ -96,27 +105,40 @@ void printBarra(int ch) {
 }
 
 void printBlocos(){
-
     screenSetColor(BLUE, DARKGRAY);
 
     screenGotoxy(3, 3);
-
-    char blocos[6][8];
     int y = 4;
 
     for (int l=0; l<6; l++){
         for (int c=0; c<8; c++){
-            if(c+1 != 8){
+            if(c+1 != 8 && blocos[l][c] == 1){
             printf("[#######] ");
             }
-            else{
+            else if(blocos[l][c] == 1){
                 printf("[#######]");
+            }
+            else{
+                printf("          ");
             }
         }
         screenGotoxy(3, y);
         y++;
     }
 
+}
+
+
+void checkBallCollisionWithBlocks(int ballX, int ballY) {
+    if (ballY >= 3 && ballY <= 8) { // Limites verticais dos blocos
+        int blockRow = ballY - 3;
+        int blockCol = (ballX - 3) / 10;
+        if (blockCol >= 0 && blockCol < 8 && blocos[blockRow][blockCol] == 1) {
+            blocos[blockRow][blockCol] = 0; // Remover bloco
+            incY = -incY; // Inverter direção da bola
+            printBlocos(); // Redesenhar blocos
+        }
+    }
 }
 
 int main() 
@@ -146,10 +168,12 @@ int main()
         if (!game_over) 
         {
             if (timerTimeOver() == 1){
-                
                 int newX = x + incX;
-                if (newX >= (MAXX -strlen("🔴")-1) || newX <= MINX+1) incX = -incX;
                 int newY = y + incY;
+                checkBallCollisionWithBlocks(newX, newY);
+
+                if (newX >= (MAXX -strlen("🔴")-1) || newX <= MINX+1) incX = -incX;
+                
                 if (newY >= MAXY-1 || newY <= MINY+1) incY = -incY;
 
                 if (newY == BAR_Y-1 && (newX >= BAR_MIN_X-2 && newX <= BAR_MAX_X+2)) {
@@ -170,7 +194,7 @@ int main()
                     printf("FIM DE JOGO");
                     game_over = true;
                 }
-
+                
                 screenUpdate();
             }
         }
