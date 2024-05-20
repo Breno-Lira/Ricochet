@@ -141,6 +141,21 @@ void checkBallCollisionWithBlocks(int ballX, int ballY) {
     }
 }
 
+void printScore(){
+    screenSetColor(WHITE, DARKGRAY);
+    screenGotoxy(3, 2);
+    int cont_blocosq = 0;
+    int cont_score = 0;
+    for(int l=0; l<6; l++){
+        for(int c=0; c<8; c++){
+            if(blocos[l][c] == 1){
+                cont_score = cont_score +  50;
+            }
+        }
+    }
+    printf("Score: %d", 2400-cont_score);
+}
+
 int main() 
 {
     static int ch = 0;
@@ -168,6 +183,8 @@ int main()
         if (!game_over) 
         {
             if (timerTimeOver() == 1){
+                printScore();
+                screenUpdate();
                 int newX = x + incX;
                 int newY = y + incY;
                 checkBallCollisionWithBlocks(newX, newY);
@@ -178,6 +195,11 @@ int main()
 
                 if (newY == BAR_Y-1 && (newX >= BAR_MIN_X-2 && newX <= BAR_MAX_X+2)) {
                     incY = -incY;
+                    if (newX < BAR_MIN_X + 5) {
+                        incX = -1; // Mudar para a esquerda
+                    } else {
+                        incX = 1; // Mudar para a direita
+                    }
                     
                 }
                 
