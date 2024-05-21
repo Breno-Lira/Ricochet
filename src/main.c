@@ -14,13 +14,13 @@ int incX = 1, incY = -1;
 
 bool game_over = false;
 
-int blocos[6][8] = {
-    {1, 1, 1, 1, 1, 1, 1, 1},
-    {1, 1, 1, 1, 1, 1, 1, 1},
-    {1, 1, 1, 1, 1, 1, 1, 1},
-    {1, 1, 1, 1, 1, 1, 1, 1},
-    {1, 1, 1, 1, 1, 1, 1, 1},
-    {1, 1, 1, 1, 1, 1, 1, 1}
+int blocos[6][9] = {
+    {1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 1}
 };
 
 void telaInicial() {
@@ -124,22 +124,22 @@ void printBarra(int ch) {
 void printBlocos(){
     screenSetColor(BLUE, DARKGRAY);
 
-    screenGotoxy(3, 3);
+    screenGotoxy(4, 3);
     int y = 4;
 
     for (int l=0; l<6; l++){
-        for (int c=0; c<8; c++){
-            if(c+1 != 8 && blocos[l][c] == 1){
-            printf("[#######] ");
+        for (int c=0; c<9; c++){
+            if(c+1 != 9 && blocos[l][c] == 1){
+            printf("🟦🟦🟦🟦 ");
             }
             else if(blocos[l][c] == 1){
-                printf("[#######]");
+                printf("🟦🟦🟦🟦");
             }
             else{
-                printf("          ");
+                printf("         ");
             }
         }
-        screenGotoxy(3, y);
+        screenGotoxy(4, y);
         y++;
     }
 
@@ -149,8 +149,8 @@ void printBlocos(){
 void checkBallCollisionWithBlocks(int ballX, int ballY) {
     if (ballY >= 3 && ballY <= 8) { // Limites verticais dos blocos
         int blockRow = ballY - 3;
-        int blockCol = (ballX - 3) / 10;
-        if (blockCol >= 0 && blockCol < 8 && blocos[blockRow][blockCol] == 1) {
+        int blockCol = (ballX - 3) / 9;
+        if (blockCol >= 0 && blockCol < 9 && blocos[blockRow][blockCol] == 1) {
             blocos[blockRow][blockCol] = 0; // Remover bloco
             incY = -incY; // Inverter direção da bola
             printBlocos(); // Redesenhar blocos
@@ -164,7 +164,7 @@ void printScore(){
     int cont_blocosq = 0;
     int cont_score = 0;
     for(int l=0; l<6; l++){
-        for(int c=0; c<8; c++){
+        for(int c=0; c<9; c++){
             if(blocos[l][c] == 0){
                 cont_score = cont_score +  50;
             }
