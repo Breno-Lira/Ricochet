@@ -38,9 +38,25 @@ void telaInicial() {
     screenGotoxy(15, 8);
     printf("|_| |_||_____ \\____| \\___/  \\____|_|  |_||_____|  |_|");
 
+    
+    screenGotoxy(30, 16);
+    printf("Digite seu nome: ");
+    char nome;
+    while (nome != '\n'){
+        if (keyhit()) 
+        {
+            nome = readch();
+            printf("%c", nome);
+            screenUpdate();
+        }
+    }
+    screenGotoxy(30, 16);
+    printf("                                                    ");
+    
     screenGotoxy(27, 11);
     printf("Pressione ESPACO para inicar!");
     screenUpdate();
+
 
     while (1) {
         if (keyhit()) {
@@ -50,6 +66,7 @@ void telaInicial() {
             }
         }
     }
+
 }
 
 void printBall(int nextX, int nextY)
@@ -160,6 +177,7 @@ int main()
 {
     static int ch = 0;
 
+
     screenInit(1);
     keyboardInit();
     timerInit(50);
@@ -212,7 +230,8 @@ int main()
                 }
 
                 if(y >= 23){
-                    screenGotoxy(35, 10);
+                    screenGotoxy(37, 10);
+                    screenSetColor(RED, DARKGRAY);
                     printf("FIM DE JOGO");
                     game_over = true;
                 }
