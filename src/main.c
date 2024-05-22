@@ -5,8 +5,8 @@
 #include "keyboard.h"
 #include "timer.h"
 
-int BAR_MIN_X = 36;
-int BAR_MAX_X = 48;
+int BAR_MIN_X = 34;
+int BAR_MAX_X = 47;
 int BAR_Y = MAXY - 1;
 
 int x = 40, y = 21;
@@ -217,8 +217,12 @@ int main()
                     incY = -incY;
                     if (newX < BAR_MIN_X + 5) {
                         incX = -1; // Mudar para a esquerda
-                    } else {
+                    } 
+                    else if(newX > BAR_MIN_X +7){
                         incX = 1; // Mudar para a direita
+                    }else{
+                        incX = 0;
+                        incY = -1;
                     }
                     
                 }
