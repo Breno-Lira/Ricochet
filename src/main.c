@@ -6,7 +6,7 @@
 #include "timer.h"
 
 int BAR_MIN_X = 36;
-int BAR_MAX_X = 46;
+int BAR_MAX_X = 48;
 int BAR_Y = MAXY - 1;
 
 int x = 40, y = 21;
@@ -41,13 +41,15 @@ void telaInicial() {
     
     screenGotoxy(30, 16);
     printf("Digite seu nome: ");
-    char nome;
-    while (nome != '\n'){
+    char nome[100], ch;
+    int i=0;
+    while (ch != '\n'){
         if (keyhit()) 
         {
-            nome = readch();
-            printf("%c", nome);
+            ch = readch();
+            printf("%c", ch);
             screenUpdate();
+            i++;
         }
     }
     screenGotoxy(30, 16);
@@ -71,13 +73,13 @@ void telaInicial() {
 
 void printBall(int nextX, int nextY)
 {
-    screenSetColor(RED, DARKGRAY);
+    screenSetColor(WHITE, DARKGRAY);
     screenGotoxy(x, y);
-    printf("    ");
+    printf("   ");
     x = nextX;
     y = nextY;
     screenGotoxy(x, y);
-    printf("🔴");
+    printf("⚪");
 }
 
 void printBarra(int ch) {
@@ -182,7 +184,7 @@ int main()
     keyboardInit();
     timerInit(50);
     screenGotoxy(x, 22);
-    printf("🔴");
+    printf("⚪");
     printBarra(ch);
     telaInicial();
     
@@ -207,7 +209,7 @@ int main()
                 int newY = y + incY;
                 checkBallCollisionWithBlocks(newX, newY);
 
-                if (newX >= (MAXX -strlen("🔴")-1) || newX <= MINX+1) incX = -incX;
+                if (newX >= (MAXX -strlen("⚪")-2) || newX <= MINX+2) incX = -incX;
                 
                 if (newY >= MAXY-1 || newY <= MINY+1) incY = -incY;
 
