@@ -17,12 +17,12 @@ int cont_score = 0;
 bool game_over = false;
 
 int blocos[6][9] = {
-    {1, 1, 1, 1, 1, 1, 1, 1, 1},
-    {1, 1, 1, 1, 1, 1, 1, 1, 1},
-    {1, 1, 1, 1, 1, 1, 1, 1, 1},
-    {1, 1, 1, 1, 1, 1, 1, 1, 1},
-    {1, 1, 1, 1, 1, 1, 1, 1, 1},
-    {1, 1, 1, 1, 1, 1, 1, 1, 1}
+    {1, 1, 1, 1, 1, 1, 1, 2, 1},
+    {5, 1, 1, 1, 2, 1, 1, 1, 1},
+    {1, 1, 6, 1, 1, 1, 3, 1, 3},
+    {1, 1, 1, 1, 1, 2, 1, 1, 1},
+    {1, 1, 4, 1, 1, 1, 1, 1, 1},
+    {4, 1, 1, 1, 3, 1, 1, 1, 6}
 };
 
 void telaInicial() {
@@ -136,11 +136,41 @@ void printBlocos(){
 
     for (int l=0; l<6; l++){
         for (int c=0; c<9; c++){
-            if(c+1 != 9 && blocos[l][c] == 1){
+            if(c+1 != 9 && blocos[l][c] == 6){
             printf("🟦🟦🟦🟦 ");
             }
-            else if(blocos[l][c] == 1){
+            else if(blocos[l][c] == 6){
                 printf("🟦🟦🟦🟦");
+            }
+            else if(c+1 != 9 && blocos[l][c] == 5){
+            printf("🟩🟩🟩🟩 ");
+            }
+            else if(blocos[l][c] == 5){
+                printf("🟩🟩🟩🟩");
+            }
+            else if(c+1 != 9 && blocos[l][c] == 4){
+            printf("🟨🟨🟨🟨 ");
+            }
+            else if(blocos[l][c] == 4){
+                printf("🟨🟨🟨🟨");
+            }
+            else if(c+1 != 9 && blocos[l][c] == 3){
+            printf("🟧🟧🟧🟧 ");
+            }
+            else if(blocos[l][c] == 3){
+                printf("🟧🟧🟧🟧");
+            }
+            else if(c+1 != 9 && blocos[l][c] == 2){
+            printf("🟥🟥🟥🟥 ");
+            }
+            else if(blocos[l][c] == 2){
+                printf("🟥🟥🟥🟥");
+            }
+            else if(c+1 != 9 && blocos[l][c] == 1){
+            printf("⬜⬜⬜⬜ ");
+            }
+            else if(blocos[l][c] == 1){
+                printf("⬜⬜⬜⬜");
             }
             else{
                 printf("         ");
@@ -159,6 +189,31 @@ void checkBallCollisionWithBlocks(int ballX, int ballY) {
         int blockCol = (ballX - 3) / 9;
         if (blockCol >= 0 && blockCol < 9 && blocos[blockRow][blockCol] == 1) {
             blocos[blockRow][blockCol] = 0; // Remover bloco
+            incY = -incY; // Inverter direção da bola
+            printBlocos(); // Redesenhar blocos
+        }
+        else if (blockCol >= 0 && blockCol < 9 && blocos[blockRow][blockCol] == 2) {
+            blocos[blockRow][blockCol] = 1; // Remover bloco
+            incY = -incY; // Inverter direção da bola
+            printBlocos(); // Redesenhar blocos
+        }
+        else if (blockCol >= 0 && blockCol < 9 && blocos[blockRow][blockCol] == 3) {
+            blocos[blockRow][blockCol] = 2; // Remover bloco
+            incY = -incY; // Inverter direção da bola
+            printBlocos(); // Redesenhar blocos
+        }
+        else if (blockCol >= 0 && blockCol < 9 && blocos[blockRow][blockCol] == 4) {
+            blocos[blockRow][blockCol] = 3; // Remover bloco
+            incY = -incY; // Inverter direção da bola
+            printBlocos(); // Redesenhar blocos
+        }
+        else if (blockCol >= 0 && blockCol < 9 && blocos[blockRow][blockCol] == 5) {
+            blocos[blockRow][blockCol] = 4; // Remover bloco
+            incY = -incY; // Inverter direção da bola
+            printBlocos(); // Redesenhar blocos
+        }
+        else if (blockCol >= 0 && blockCol < 9 && blocos[blockRow][blockCol] == 6) {
+            blocos[blockRow][blockCol] = 5; // Remover bloco
             incY = -incY; // Inverter direção da bola
             printBlocos(); // Redesenhar blocos
         }
