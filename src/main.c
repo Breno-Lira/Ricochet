@@ -2,12 +2,13 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include <stdio.h> // Incluído para operações de arquivo
 #include "screen.h"
 #include "keyboard.h"
 #include "timer.h"
 
-int BAR_MIN_X = 34;
-int BAR_MAX_X = 47;
+int BAR_MIN_X = 35;
+int BAR_MAX_X = 46;
 int BAR_Y = MAXY - 1;
 
 int x = 40, y = 21;
@@ -19,13 +20,15 @@ bool game_over = false;
 
 int blocos[6][9];
 
+char nome[100]; // Nome do jogador armazenado aqui
+
 void inicializarSemente() {
     srand(time(NULL));
 }
 
 // Função para gerar um número aleatório entre 1 e 6
 int gerarNumeroAleatorio() {
-    return (rand() % 6) + 1;
+    return (rand() % 4) + 1;
 }
 
 // Função para preencher a matriz com números aleatórios de 1 a 6
@@ -55,27 +58,21 @@ void telaInicial() {
     
     screenGotoxy(30, 16);
     printf("Digite seu nome: ");
-    char nome[100], ch;
-    int i=0;
+    char ch;
+    int i = 0;
 
-    while (ch != '\n'){
-        if (keyhit()) 
-        {
-            ch = readch();
-            nome[i] = ch;
-            printf("%c", ch);
-            screenUpdate();
-            i++;
-        }
+    while ((ch = getchar()) != '\n' && i < sizeof(nome) - 1) {
+        nome[i++] = ch;
+        printf("%c", ch);
+        screenUpdate();
     }
     nome[i] = '\0';
     screenGotoxy(30, 16);
     printf("                                                    ");
     
     screenGotoxy(27, 11);
-    printf("Pressione ESPACO para inicar!");
+    printf("Pressione ESPACO para iniciar!");
     screenUpdate();
-
 
     while (1) {
         if (keyhit()) {
@@ -85,7 +82,6 @@ void telaInicial() {
             }
         }
     }
-
 }
 
 void printBall(int nextX, int nextY)
@@ -106,96 +102,85 @@ void printBarra(int ch) {
         printf("T");
     }
 
-    if(BAR_MAX_X < 81){
-        if (ch == 100){
+     if (BAR_MAX_X-2 < 82) {
+        if (ch == 100) {
 
             screenGotoxy(BAR_MIN_X, 23);
             printf("         ");
+            
 
-            BAR_MIN_X +=4;
-            BAR_MAX_X +=4;
+            if (BAR_MAX_X+4 > 82){
+                BAR_MIN_X += 3;
+                BAR_MAX_X += 3;
+            }
+            else{
+                BAR_MIN_X += 4;
+                BAR_MAX_X += 4;
+            }
             
             for (int i = BAR_MIN_X; i <= BAR_MAX_X; i++) {
-            screenGotoxy(i, BAR_Y);
-            printf("T");
+                screenGotoxy(i, BAR_Y);
+                printf("T");
             }
         }
     }
 
-    if (BAR_MIN_X > 4){
-        if (ch == 97){
+    if (BAR_MIN_X > 4) {
+        if (ch == 97) {
 
-            screenGotoxy(BAR_MAX_X-3, 23);
+            screenGotoxy(BAR_MAX_X - 3, 23);
             printf("         ");
 
-            BAR_MIN_X += (-4);
-            BAR_MAX_X += (-4);
-            
+            if (BAR_MAX_X == 85){
+                BAR_MIN_X += (-3);
+                BAR_MAX_X += (-3);
+            }
+            else{
+                BAR_MIN_X += (-4);
+                BAR_MAX_X += (-4);
+            }
             for (int i = BAR_MIN_X; i <= BAR_MAX_X; i++) {
-            screenGotoxy(i, BAR_Y);
-            printf("T");
+                screenGotoxy(i, BAR_Y);
+                printf("T");
             }
         }
     }
-
 }
 
-void printBlocos(){
+void printBlocos() {
     screenSetColor(BLUE, DARKGRAY);
 
     screenGotoxy(4, 3);
     int y = 4;
 
-    for (int l=0; l<6; l++){
-        for (int c=0; c<9; c++){
-            if(c+1 != 9 && blocos[l][c] == 6){
-            printf("🟦🟦🟦🟦 ");
-            }
-            else if(blocos[l][c] == 6){
-                printf("🟦🟦🟦🟦");
-            }
-            else if(c+1 != 9 && blocos[l][c] == 5){
-            printf("🟩🟩🟩🟩 ");
-            }
-            else if(blocos[l][c] == 5){
-                printf("🟩🟩🟩🟩");
-            }
-            else if(c+1 != 9 && blocos[l][c] == 4){
-            printf("🟨🟨🟨🟨 ");
-            }
-            else if(blocos[l][c] == 4){
-                printf("🟨🟨🟨🟨");
-            }
-            else if(c+1 != 9 && blocos[l][c] == 3){
-            printf("🟧🟧🟧🟧 ");
-            }
-            else if(blocos[l][c] == 3){
-                printf("🟧🟧🟧🟧");
-            }
-            else if(c+1 != 9 && blocos[l][c] == 2){
-            printf("🟥🟥🟥🟥 ");
-            }
-            else if(blocos[l][c] == 2){
+    for (int l = 0; l < 6; l++) {
+        for (int c = 0; c < 9; c++) {
+            if (c + 1 != 9 && blocos[l][c] == 4) {
+                printf("🟥🟥🟥🟥 ");
+            } else if (blocos[l][c] == 4) {
                 printf("🟥🟥🟥🟥");
-            }
-            else if(c+1 != 9 && blocos[l][c] == 1){
-            printf("⬜⬜⬜⬜ ");
-            }
-            else if(blocos[l][c] == 1){
+            } else if (c + 1 != 9 && blocos[l][c] == 3) {
+                printf("🟧🟧🟧🟧 ");
+            } else if (blocos[l][c] == 3) {
+                printf("🟧🟧🟧🟧");
+            } else if (c + 1 != 9 && blocos[l][c] == 2) {
+                printf("🟨🟨🟨🟨 ");
+            } else if (blocos[l][c] == 2) {
+                printf("🟨🟨🟨🟨");
+            } else if (c + 1 != 9 && blocos[l][c] == 1) {
+                printf("⬜⬜⬜⬜ ");
+            } else if (blocos[l][c] == 1) {
                 printf("⬜⬜⬜⬜");
-            }
-            else{
+            } else {
                 printf("         ");
             }
         }
         screenGotoxy(4, y);
         y++;
     }
-
 }
 
-
-void checkBallCollisionWithBlocks(int ballX, int ballY) {
+void ColisaoBloco(int ballX, int ballY) {
     if (ballY >= 3 && ballY <= 8) { // Limites verticais dos blocos
         int blockRow = ballY - 3;
         int blockCol = (ballX - 3) / 9;
@@ -204,23 +189,30 @@ void checkBallCollisionWithBlocks(int ballX, int ballY) {
             incY = -incY; // Inverter direção da bola
             printBlocos(); // Redesenhar blocos
         }
-        
     }
 }
 
-void printScore(){
+void printScore() {
     screenSetColor(WHITE, DARKGRAY);
     screenGotoxy(3, 2);
     int cont_blocosq = 0;
     cont_score = 0;
-    for(int l=0; l<6; l++){
-        for(int c=0; c<9; c++){
-            if(blocos[l][c] == 0){
-                cont_score = cont_score +  50;
+    for (int l = 0; l < 6; l++) {
+        for (int c = 0; c < 9; c++) {
+            if (blocos[l][c] == 0) {
+                cont_score = cont_score + 50;
             }
         }
     }
     printf("Score: %d", cont_score);
+}
+
+void salvarScoreNoArquivo(const char* nome, int score) {
+    FILE* arquivo = fopen("scores.txt", "a");
+    if (arquivo != NULL) {
+        fprintf(arquivo, "Nome: %s, Score: %d\n", nome, score);
+        fclose(arquivo);
+    } 
 }
 
 int main() 
@@ -236,7 +228,6 @@ int main()
     printBarra(ch);
     telaInicial();
     
-
     screenInit(1);
     keyboardInit();
     timerInit(50);
@@ -255,7 +246,7 @@ int main()
                 screenUpdate();
                 int newX = x + incX;
                 int newY = y + incY;
-                checkBallCollisionWithBlocks(newX, newY);
+                ColisaoBloco(newX, newY);
 
                 if (newX >= (MAXX -strlen("⚪")-2) || newX <= MINX+2) incX = -incX;
                 
@@ -263,16 +254,15 @@ int main()
 
                 if (newY == BAR_Y-1 && (newX >= BAR_MIN_X-2 && newX <= BAR_MAX_X+2)) {
                     incY = -incY;
-                    if (newX < BAR_MIN_X + 6) {
+                    if (newX < BAR_MIN_X + 4) {
                         incX = -1; // Mudar para a esquerda
                     } 
-                    else if(newX > BAR_MIN_X +7){
+                    else if(newX > BAR_MIN_X +5){
                         incX = 1; // Mudar para a direita
-                    }else{
+                    } else {
                         incX = 0;
                         incY = -1;
                     }
-                    
                 }
                 
                 printBall(newX, newY);
@@ -283,14 +273,13 @@ int main()
                     screenUpdate();
                 }
 
-                if(y >= 23){
+                if (y >= 23) {
                     screenGotoxy(37, 10);
                     screenSetColor(RED, DARKGRAY);
                     printf("FIM DE JOGO");
                     game_over = true;
+                    salvarScoreNoArquivo(nome, cont_score); // Salvar o score no arquivo quando o jogo termina
                 }
-
-                
                 
                 screenUpdate();
             }
@@ -301,7 +290,6 @@ int main()
             // mas não execute a lógica de atualização do jogo
             ch = readch();
             screenUpdate();
-        
         }
     }
 
