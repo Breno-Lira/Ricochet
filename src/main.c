@@ -1,5 +1,6 @@
 #include <stdbool.h>
 #include <string.h>
+#include <stdlib.h>
 #include <time.h>
 #include "screen.h"
 #include "keyboard.h"
@@ -16,14 +17,25 @@ int cont_score = 0;
 
 bool game_over = false;
 
-int blocos[6][9] = {
-    {1, 1, 1, 1, 1, 1, 1, 2, 1},
-    {5, 1, 1, 1, 2, 1, 1, 1, 1},
-    {1, 1, 6, 1, 1, 1, 3, 1, 3},
-    {1, 1, 1, 1, 1, 2, 1, 1, 1},
-    {1, 1, 4, 1, 1, 1, 1, 1, 1},
-    {4, 1, 1, 1, 3, 1, 1, 1, 6}
-};
+int blocos[6][9];
+
+void inicializarSemente() {
+    srand(time(NULL));
+}
+
+// Função para gerar um número aleatório entre 1 e 6
+int gerarNumeroAleatorio() {
+    return (rand() % 6) + 1;
+}
+
+// Função para preencher a matriz com números aleatórios de 1 a 6
+void preencherMatriz() {
+    for (int i = 0; i < 6; i++) {
+        for (int j = 0; j < 9; j++) {
+            blocos[i][j] = gerarNumeroAleatorio();
+        }
+    }
+}
 
 void telaInicial() {
     screenGotoxy(15, 3);
@@ -238,8 +250,8 @@ void printScore(){
 int main() 
 {
     static int ch = 0;
-
-
+    inicializarSemente();
+    preencherMatriz();
     screenInit(1);
     keyboardInit();
     timerInit(50);
