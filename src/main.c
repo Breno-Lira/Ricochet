@@ -199,36 +199,12 @@ void checkBallCollisionWithBlocks(int ballX, int ballY) {
     if (ballY >= 3 && ballY <= 8) { // Limites verticais dos blocos
         int blockRow = ballY - 3;
         int blockCol = (ballX - 3) / 9;
-        if (blockCol >= 0 && blockCol < 9 && blocos[blockRow][blockCol] == 1) {
-            blocos[blockRow][blockCol] = 0; // Remover bloco
+        if (blockCol >= 0 && blockCol < 9 && blocos[blockRow][blockCol] != 0) {
+            blocos[blockRow][blockCol] -= 1; // Remover bloco
             incY = -incY; // Inverter direção da bola
             printBlocos(); // Redesenhar blocos
         }
-        else if (blockCol >= 0 && blockCol < 9 && blocos[blockRow][blockCol] == 2) {
-            blocos[blockRow][blockCol] = 1; // Remover bloco
-            incY = -incY; // Inverter direção da bola
-            printBlocos(); // Redesenhar blocos
-        }
-        else if (blockCol >= 0 && blockCol < 9 && blocos[blockRow][blockCol] == 3) {
-            blocos[blockRow][blockCol] = 2; // Remover bloco
-            incY = -incY; // Inverter direção da bola
-            printBlocos(); // Redesenhar blocos
-        }
-        else if (blockCol >= 0 && blockCol < 9 && blocos[blockRow][blockCol] == 4) {
-            blocos[blockRow][blockCol] = 3; // Remover bloco
-            incY = -incY; // Inverter direção da bola
-            printBlocos(); // Redesenhar blocos
-        }
-        else if (blockCol >= 0 && blockCol < 9 && blocos[blockRow][blockCol] == 5) {
-            blocos[blockRow][blockCol] = 4; // Remover bloco
-            incY = -incY; // Inverter direção da bola
-            printBlocos(); // Redesenhar blocos
-        }
-        else if (blockCol >= 0 && blockCol < 9 && blocos[blockRow][blockCol] == 6) {
-            blocos[blockRow][blockCol] = 5; // Remover bloco
-            incY = -incY; // Inverter direção da bola
-            printBlocos(); // Redesenhar blocos
-        }
+        
     }
 }
 
@@ -287,7 +263,7 @@ int main()
 
                 if (newY == BAR_Y-1 && (newX >= BAR_MIN_X-2 && newX <= BAR_MAX_X+2)) {
                     incY = -incY;
-                    if (newX < BAR_MIN_X + 5) {
+                    if (newX < BAR_MIN_X + 6) {
                         incX = -1; // Mudar para a esquerda
                     } 
                     else if(newX > BAR_MIN_X +7){
