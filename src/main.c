@@ -12,6 +12,8 @@ int BAR_Y = MAXY - 1;
 int x = 40, y = 21;
 int incX = 1, incY = -1;
 
+int cont_score = 0;
+
 bool game_over = false;
 
 int blocos[6][9] = {
@@ -43,15 +45,18 @@ void telaInicial() {
     printf("Digite seu nome: ");
     char nome[100], ch;
     int i=0;
+
     while (ch != '\n'){
         if (keyhit()) 
         {
             ch = readch();
+            nome[i] = ch;
             printf("%c", ch);
             screenUpdate();
             i++;
         }
     }
+    nome[i] = '\0';
     screenGotoxy(30, 16);
     printf("                                                    ");
     
@@ -164,7 +169,7 @@ void printScore(){
     screenSetColor(WHITE, DARKGRAY);
     screenGotoxy(3, 2);
     int cont_blocosq = 0;
-    int cont_score = 0;
+    cont_score = 0;
     for(int l=0; l<6; l++){
         for(int c=0; c<9; c++){
             if(blocos[l][c] == 0){
@@ -198,7 +203,7 @@ int main()
     screenUpdate();
     printBarra(ch);
 
-    while (true) // Loop infinito
+    while (ch != 112) // Loop infinito
     {
         if (!game_over) 
         {
@@ -241,6 +246,8 @@ int main()
                     printf("FIM DE JOGO");
                     game_over = true;
                 }
+
+                
                 
                 screenUpdate();
             }
@@ -249,7 +256,9 @@ int main()
         {
             // Mantenha o loop rodando para manter a tela congelada
             // mas não execute a lógica de atualização do jogo
+            ch = readch();
             screenUpdate();
+        
         }
     }
 
