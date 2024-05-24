@@ -7,6 +7,14 @@
 #include "keyboard.h"
 #include "timer.h"
 
+struct dados{
+    char nome[50];
+    int pontos;
+    struct dados *next;
+};
+
+struct dados ordem;
+
 int BAR_MIN_X = 35;
 int BAR_MAX_X = 46;
 int BAR_Y = MAXY - 1;
@@ -28,7 +36,7 @@ void inicializarSemente() {
 
 // Função para gerar um número aleatório entre 1 e 6
 int gerarNumeroAleatorio() {
-    return (rand() % 4) + 1;
+    return (rand() % 3) + 1;
 }
 
 // Função para preencher a matriz com números aleatórios de 1 a 6
@@ -150,27 +158,23 @@ void printBarra(int ch) {
 void printBlocos() {
     screenSetColor(BLUE, DARKGRAY);
 
-    screenGotoxy(4, 3);
-    int y = 4;
+    screenGotoxy(4, 4);
+    int y = 5;
 
     for (int l = 0; l < 6; l++) {
         for (int c = 0; c < 9; c++) {
-            if (c + 1 != 9 && blocos[l][c] == 4) {
+            if (c + 1 != 9 && blocos[l][c] == 3) {
                 printf("🟥🟥🟥🟥 ");
-            } else if (blocos[l][c] == 4) {
-                printf("🟥🟥🟥🟥");
-            } else if (c + 1 != 9 && blocos[l][c] == 3) {
-                printf("🟧🟧🟧🟧 ");
             } else if (blocos[l][c] == 3) {
-                printf("🟧🟧🟧🟧");
+                printf("🟥🟥🟥🟥");
             } else if (c + 1 != 9 && blocos[l][c] == 2) {
-                printf("🟨🟨🟨🟨 ");
+                printf("🟧🟧🟧🟧 ");
             } else if (blocos[l][c] == 2) {
-                printf("🟨🟨🟨🟨");
+                printf("🟧🟧🟧🟧");
             } else if (c + 1 != 9 && blocos[l][c] == 1) {
-                printf("⬜⬜⬜⬜ ");
+                printf("🟨🟨🟨🟨 ");
             } else if (blocos[l][c] == 1) {
-                printf("⬜⬜⬜⬜");
+                printf("🟨🟨🟨🟨");
             } else {
                 printf("         ");
             }
@@ -180,17 +184,32 @@ void printBlocos() {
     }
 }
 
-void ColisaoBloco(int ballX, int ballY) {
-    if (ballY >= 3 && ballY <= 8) { // Limites verticais dos blocos
-        int blockRow = ballY - 3;
-        int blockCol = (ballX - 3) / 9;
-        if (blockCol >= 0 && blockCol < 9 && blocos[blockRow][blockCol] != 0) {
-            blocos[blockRow][blockCol] -= 1; // Remover bloco
-            incY = -incY; // Inverter direção da bola
-            printBlocos(); // Redesenhar blocos
+void ColisaoBloco(int ballX, int ballY, int x, int y) {
+    if (y > ballY ){
+         if (ballY >= 5 && ballY <= 10) { // Limites verticais ajustados para o espaço abaixo dos blocos
+            int blockRow = ballY - 5; // Ajuste para a nova posição dos blocos
+            int blockCol = (ballX - 3) / 9;
+            if (blockCol >= 0 && blockCol < 9 && blocos[blockRow][blockCol] != 0) {
+                blocos[blockRow][blockCol] -= 1; // Remover bloco
+                incY = -incY; // Inverter direção da bola
+                printBlocos(); // Redesenhar blocos
+            }
+        }
+    
+    }
+    else{
+         if (ballY >= 3 && ballY <= 10) { // Limites verticais ajustados para o espaço abaixo dos blocos
+            int blockRow = ballY - 3; // Ajuste para a nova posição dos blocos
+            int blockCol = (ballX - 3) / 9;
+            if (blockCol >= 0 && blockCol < 9 && blocos[blockRow][blockCol] != 0) {
+                blocos[blockRow][blockCol] -= 1; // Remover bloco
+                incY = -incY; // Inverter direção da bola
+                printBlocos(); // Redesenhar blocos
+            }
         }
     }
 }
+
 
 void printScore() {
     screenSetColor(WHITE, DARKGRAY);
@@ -210,9 +229,28 @@ void printScore() {
 void salvarScoreNoArquivo(const char* nome, int score) {
     FILE* arquivo = fopen("scores.txt", "a");
     if (arquivo != NULL) {
-        fprintf(arquivo, "Nome: %s, Score: %d\n", nome, score);
+        fprintf(arquivo, "%s %d\n", nome, score);
         fclose(arquivo);
     } 
+}
+
+
+void LerDados(){
+
+    FILE* arquivo = fopen("scores.txt", "r");
+    char name[50];
+    int pont;
+    while(fscanf(arquivo, "%s %d", name, &pont) != EOF){
+
+
+    }
+
+}
+
+
+void inserir(){
+
+    
 }
 
 int main() 
@@ -237,6 +275,8 @@ int main()
     screenUpdate();
     printBarra(ch);
 
+
+
     while (ch != 112) // Loop infinito
     {
         if (!game_over) 
@@ -246,7 +286,8 @@ int main()
                 screenUpdate();
                 int newX = x + incX;
                 int newY = y + incY;
-                ColisaoBloco(newX, newY);
+
+                ColisaoBloco(newX, newY, x, y);
 
                 if (newX >= (MAXX -strlen("⚪")-2) || newX <= MINX+2) incX = -incX;
                 
@@ -264,6 +305,7 @@ int main()
                         incY = -1;
                     }
                 }
+
                 
                 printBall(newX, newY);
 
