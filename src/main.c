@@ -192,7 +192,7 @@ void printBlocos() {
 }
 
 void ColisaoBloco(int ballX, int ballY, int x, int y) {
-    if (y > ballY ){
+    if(y > ballY){
          if (ballY >= 5 && ballY <= 10) { // Limites verticais ajustados para o espaço abaixo dos blocos
             int blockRow = ballY - 5; // Ajuste para a nova posição dos blocos
             int blockCol = (ballX - 3) / 9;
@@ -202,20 +202,22 @@ void ColisaoBloco(int ballX, int ballY, int x, int y) {
                 printBlocos(); // Redesenhar blocos
             }
         }
-    
     }
     else{
-         if (ballY >= 3 && ballY <= 10) { // Limites verticais ajustados para o espaço abaixo dos blocos
+        if (ballY >= 3 && ballY <= 8) { // Limites verticais ajustados para o espaço abaixo dos blocos
             int blockRow = ballY - 3; // Ajuste para a nova posição dos blocos
             int blockCol = (ballX - 3) / 9;
-            if (blockCol >= 0 && blockCol < 9 && blocos[blockRow][blockCol] != 0) {
+            if ((blockCol >= 0 || blockCol < 9) && blocos[blockRow][blockCol] > 0) {
                 blocos[blockRow][blockCol] -= 1; // Remover bloco
                 incY = -incY; // Inverter direção da bola
                 printBlocos(); // Redesenhar blocos
             }
         }
     }
+    
 }
+
+
 
 
 void printScore() {
@@ -334,6 +336,8 @@ int main()
                 int newY = y + incY;
 
                 ColisaoBloco(newX, newY, x, y);
+                
+                
 
                 if (newX >= (MAXX -strlen("⚪")-2) || newX <= MINX+2) incX = -incX;
                 
@@ -352,7 +356,7 @@ int main()
                     }
                 }
 
-                
+                printBlocos();
                 printBall(newX, newY);
 
                 if (keyhit()) {
