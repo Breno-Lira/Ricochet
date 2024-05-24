@@ -1,1 +1,6 @@
-
+l 0
+pol 300lucas 0
+lucas2 350
+ludeholanda 0
+pol 850
+polo 950

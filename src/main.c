@@ -13,6 +13,10 @@ struct dados{
     struct dados *next;
 };
 
+void LerDados();
+void inserir(struct dados **head, char *nome, int pontos);
+void PrintDados(struct dados *head);
+
 struct dados ordem;
 
 int BAR_MIN_X = 35;
@@ -80,6 +84,9 @@ void telaInicial() {
     
     screenGotoxy(27, 11);
     printf("Pressione ESPACO para iniciar!");
+    screenGotoxy(40, 13);
+    printf("PÓDIO 🏆");
+    LerDados();
     screenUpdate();
 
     while (1) {
@@ -236,21 +243,60 @@ void salvarScoreNoArquivo(const char* nome, int score) {
 
 
 void LerDados(){
-
+    struct dados *head = NULL;
     FILE* arquivo = fopen("scores.txt", "r");
     char name[50];
     int pont;
     while(fscanf(arquivo, "%s %d", name, &pont) != EOF){
-
-
+        inserir(&head, name, pont);
     }
-
+    fclose(arquivo);
+    PrintDados(head);
 }
 
 
-void inserir(){
+void inserir(struct dados **head, char *nome, int pontos){
+    struct dados *temp = *head;
+    struct dados *novo = (struct dados *)malloc(sizeof(struct dados));
+    strcpy(novo->nome, nome);
+    novo->pontos = pontos;
+    novo->next = NULL;
+    if((*head) == NULL || (*head)->pontos < novo->pontos){
+        novo->next = *head;
+        *head = novo;
+    }else{
+        while(temp->next != NULL && temp->next->pontos > novo->pontos){
+            temp = temp->next;
+        }
+        novo->next = temp->next;
+        temp->next = novo;
+    }
+}
 
-    
+void PrintDados(struct dados *head){
+    struct dados *temp = head;
+    int cont = 0, a = 14;
+    if(head == NULL){
+        printf("Sem nenhum jogador!");
+    }else{
+        while(temp != NULL){
+            if(cont < 3){
+                if(cont == 0){
+                    screenGotoxy(29, a);
+                    printf("🥇 %s | score: %d\n", temp->nome, temp->pontos);
+                }else if(cont == 1){
+                    screenGotoxy(29, a);
+                    printf("🥈 %s | score: %d\n", temp->nome, temp->pontos);
+                }else{
+                    screenGotoxy(29, a);
+                    printf("🥉 %s | score: %d\n", temp->nome, temp->pontos);
+                }
+            }
+            temp = temp->next;
+            cont++;
+            a++;
+        }
+    }
 }
 
 int main() 
