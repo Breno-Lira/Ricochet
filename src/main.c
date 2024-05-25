@@ -28,8 +28,11 @@ int poderAleatorio = 0;
 int x = 40, y = 21;
 int incX = 1, incY = -1;
 
-int x2 = 40, y2 = 20;
+int x2 = 41, y2 = 20;
 int incX2 = 1, incY2 = -1;
+
+int x3 = 39, y3 = 20;
+int incX3 = -1, incY3 = -1;
 
 int xpoder = 20, ypoder = 12, tempoder;
 int incXpoder = 0, incYpoder = 1;
@@ -145,8 +148,26 @@ void printBall2(int nextX2, int nextY2){
     if(b2 == false){
         screenGotoxy(x2, y2);
         printf("   ");
-        x2 = 40;
+        x2 = 41;
         y2 = 20;
+    }
+}
+
+void printBall3(int nextX3, int nextY3){
+    if ( b2 == true){
+        screenSetColor(WHITE, DARKGRAY);
+        screenGotoxy(x3, y3);
+        printf("   ");
+        x3 = nextX3;
+        y3 = nextY3;
+        screenGotoxy(x3, y3);
+        printf("🟢");
+    }
+    if(b2 == false){
+        screenGotoxy(x3, y3);
+        printf("   ");
+        x3 = 39;
+        y3 = 20;
     }
 }
 
@@ -429,6 +450,32 @@ void ColisaoBloco2(int ballX2, int ballY2, int x2, int y2) {
     
 }
 
+void ColisaoBloco3(int ballX3, int ballY3, int x3, int y3) {
+    if(y3 > ballY3){
+         if (ballY3 >= 5 && ballY3 <= 10) { // Limites verticais ajustados para o espaço abaixo dos blocos
+            int blockRow = ballY3 - 5; // Ajuste para a nova posição dos blocos
+            int blockCol = (ballX3 - 3) / 9;
+            if (blockCol >= 0 && blockCol < 9 && blocos[blockRow][blockCol] != 0) {
+                blocos[blockRow][blockCol] -= 1; // Remover bloco
+                incY3 = -incY3; // Inverter direção da bola
+                printBlocos(); // Redesenhar blocos
+            }
+        }
+    }
+    else{
+        if (ballY3 >= 3 && ballY3 <= 8) { // Limites verticais ajustados para o espaço abaixo dos blocos
+            int blockRow = ballY3 - 3; // Ajuste para a nova posição dos blocos
+            int blockCol = (ballX3 - 3) / 9;
+            if ((blockCol >= 0 || blockCol < 9) && blocos[blockRow][blockCol] > 0) {
+                blocos[blockRow][blockCol] -= 1; // Remover bloco
+                incY3 = -incY3; // Inverter direção da bola
+                printBlocos(); // Redesenhar blocos
+            }
+        }
+    }
+    
+}
+
 
 void printScore() {
     screenSetColor(WHITE, DARKGRAY);
@@ -570,11 +617,14 @@ int main()
             int newX2 = x2 + incX2;
             int newY2 = y2 + incY2;
 
+            int newX3 = x3 + incX3;
+            int newY3 = y3 + incY3;
+
             int newYpoder = ypoder + incYpoder;
 
             ColisaoBloco(newX, newY, x, y);
             ColisaoBloco2(newX2, newY2, x2, y2);
-
+            ColisaoBloco3(newX3, newY3, x3, y3);
             
             
             if (newX >= (MAXX -strlen("⚪")-2) || newX <= MINX+2) incX = -incX;
@@ -608,6 +658,23 @@ int main()
                 } else {
                     incX2 = 0;
                     incY2 = -1;
+                }
+            }
+
+            if (newX3 >= (MAXX -strlen("⚪")-2) || newX3 <= MINX+2) incX3 = -incX3;
+            
+            if (newY3 >= MAXY-1 || newY3 <= MINY+1) incY3 = -incY3;
+
+            if (newY3 == BAR_Y-1 && (newX3 >= BAR_MIN_X-2 && newX3 <= BAR_MAX_X+2)) {
+                incY3 = -incY3;
+                if (newX3 < BAR_MIN_X + 4) {
+                    incX3 = -1; // Mudar para a esquerda
+                } 
+                else if(newX3 > BAR_MIN_X +5){
+                    incX3 = 1; // Mudar para a direita
+                } else {
+                    incX3 = 0;
+                    incY3 = -1;
                 }
             }
 
@@ -685,6 +752,7 @@ int main()
             }
         
             printBall2(newX2, newY2);
+            printBall3(newX3, newY3);
             
 
             if (y >= 23) {

@@ -14,3 +14,11 @@ opadd 350
 pada 2400
 opa 100
 opad 150
+opad 50
+opada 150
+opad 200
+opsd 900
+opad 650
+poadd 550
+opaddd 300
+opadaad 250
