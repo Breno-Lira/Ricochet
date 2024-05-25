@@ -23,12 +23,25 @@ int BAR_MIN_X = 35;
 int BAR_MAX_X = 46;
 int BAR_Y = MAXY - 1;
 
+int poderAleatorio = 0;
+
 int x = 40, y = 21;
 int incX = 1, incY = -1;
 
+int x2 = 40, y2 = 20;
+int incX2 = 1, incY2 = -1;
+
+int xpoder = 20, ypoder = 16, tempoder;
+int incXpoder = 0, incYpoder = 1;
+
 int cont_score = 0;
+int contPoder = 0;
+int contPoderV = 0;
+int contPoderV2 = 0;
 
 bool game_over = false;
+bool b2 = false;
+bool overdrive = false;
 
 int blocos[6][9];
 
@@ -38,7 +51,7 @@ void inicializarSemente() {
     srand(time(NULL));
 }
 
-// Função para gerar um número aleatório entre 1 e 6
+// Função para gerar um número aleatório entre 1 e 3
 int gerarNumeroAleatorio() {
     return (rand() % 3) + 1;
 }
@@ -99,15 +112,38 @@ void telaInicial() {
     }
 }
 
-void printBall(int nextX, int nextY)
-{
+void printBall(int nextX, int nextY){
     screenSetColor(WHITE, DARKGRAY);
     screenGotoxy(x, y);
     printf("   ");
     x = nextX;
+    
     y = nextY;
     screenGotoxy(x, y);
-    printf("⚪");
+    if (overdrive == false){
+        printf("⚪");
+    }
+    else{
+        printf("🔴");
+    } 
+}
+
+void printBall2(int nextX2, int nextY2){
+    if ( b2 == true){
+        screenSetColor(WHITE, DARKGRAY);
+        screenGotoxy(x2, y2);
+        printf("   ");
+        x2 = nextX2;
+        y2 = nextY2;
+        screenGotoxy(x2, y2);
+        printf("🟢");
+    }
+    if(b2 == false){
+        screenGotoxy(x2, y2);
+        printf("   ");
+        x2 = 40;
+        y2 = 20;
+    }
 }
 
 void printBarra(int ch) {
@@ -191,15 +227,81 @@ void printBlocos() {
     }
 }
 
+void gerarPoder(){
+    int powerup = rand() % 10 + 1;
+    screenGotoxy(40,2);
+    printf("  ");
+    printf("%d", powerup);
+    if (powerup <= 10){
+        poderAleatorio = rand() % 2 + 1;
+    }
+
+}
+
+
+void pritandoPoder1(int nextXP, int nextYP){
+        if (b2 == false){
+        screenSetColor(WHITE, DARKGRAY);
+        screenGotoxy(xpoder, ypoder);
+        printf("   ");
+        contPoderV++;
+        if (contPoderV >= contPoderV2){
+        ypoder = nextYP;
+        contPoderV2 += 5;
+        }
+        screenGotoxy(xpoder, ypoder);
+        printf("⏺️");
+        }
+        else{
+            screenGotoxy(xpoder, ypoder);
+            printf("  ");
+            poderAleatorio = 0;
+        }
+
+}
+
+void pritandoPoder2(int nextXP, int nextYP){
+        if (overdrive == false){
+        screenSetColor(WHITE, DARKGRAY);
+        screenGotoxy(xpoder, ypoder);
+        printf("   ");
+        contPoderV++;
+        if (contPoderV >= contPoderV2){
+        ypoder = nextYP;
+        contPoderV2 += 5;
+        }
+        screenGotoxy(xpoder, ypoder);
+        printf("💥");
+        }
+        else{
+            screenGotoxy(xpoder, ypoder);
+            printf("  ");
+            poderAleatorio = 0;
+            
+        }
+
+}
+
 void ColisaoBloco(int ballX, int ballY, int x, int y) {
     if(y > ballY){
          if (ballY >= 5 && ballY <= 10) { // Limites verticais ajustados para o espaço abaixo dos blocos
             int blockRow = ballY - 5; // Ajuste para a nova posição dos blocos
             int blockCol = (ballX - 3) / 9;
             if (blockCol >= 0 && blockCol < 9 && blocos[blockRow][blockCol] != 0) {
+                if (overdrive == false){
                 blocos[blockRow][blockCol] -= 1; // Remover bloco
                 incY = -incY; // Inverter direção da bola
+                if (blocos[blockRow][blockCol] == 0){
+                xpoder = x;
+                ypoder = y;
+                gerarPoder();
+                }
                 printBlocos(); // Redesenhar blocos
+                }
+                else{
+                    blocos[blockRow][blockCol] = 0; // Remover bloco
+                    printBlocos();
+                }
             }
         }
     }
@@ -208,16 +310,46 @@ void ColisaoBloco(int ballX, int ballY, int x, int y) {
             int blockRow = ballY - 3; // Ajuste para a nova posição dos blocos
             int blockCol = (ballX - 3) / 9;
             if ((blockCol >= 0 || blockCol < 9) && blocos[blockRow][blockCol] > 0) {
+                if (overdrive == false){
+                    blocos[blockRow][blockCol] -= 1; // Remover bloco
+                    incY = -incY; // Inverter direção da bola
+                    printBlocos(); // Redesenhar blocos
+                }
+                else{
+                    blocos[blockRow][blockCol] = 0; // Remover bloco
+                    printBlocos(); // Redesenhar blocos
+                }
+            }
+        }
+    
+    }
+}   
+
+void ColisaoBloco2(int ballX2, int ballY2, int x2, int y2) {
+    if(y2 > ballY2){
+         if (ballY2 >= 5 && ballY2 <= 10) { // Limites verticais ajustados para o espaço abaixo dos blocos
+            int blockRow = ballY2 - 5; // Ajuste para a nova posição dos blocos
+            int blockCol = (ballX2 - 3) / 9;
+            if (blockCol >= 0 && blockCol < 9 && blocos[blockRow][blockCol] != 0) {
                 blocos[blockRow][blockCol] -= 1; // Remover bloco
-                incY = -incY; // Inverter direção da bola
+                incY2 = -incY2; // Inverter direção da bola
+                printBlocos(); // Redesenhar blocos
+            }
+        }
+    }
+    else{
+        if (ballY2 >= 3 && ballY2 <= 8) { // Limites verticais ajustados para o espaço abaixo dos blocos
+            int blockRow = ballY2 - 3; // Ajuste para a nova posição dos blocos
+            int blockCol = (ballX2 - 3) / 9;
+            if ((blockCol >= 0 || blockCol < 9) && blocos[blockRow][blockCol] > 0) {
+                blocos[blockRow][blockCol] -= 1; // Remover bloco
+                incY2 = -incY2; // Inverter direção da bola
                 printBlocos(); // Redesenhar blocos
             }
         }
     }
     
 }
-
-
 
 
 void printScore() {
@@ -301,6 +433,27 @@ void PrintDados(struct dados *head){
     }
 }
 
+void contadorPoderes(){
+    if (overdrive == true){
+        contPoder++;
+        if (contPoder > 45){
+            overdrive = false;
+            contPoder = 0;
+        }
+    }
+    if (b2 == true){
+        contPoder++;
+        if (contPoder > 100){
+            b2 = false;
+            contPoder = 0;
+        }
+    }
+
+
+}
+
+
+
 int main() 
 {
     static int ch = 0;
@@ -326,64 +479,131 @@ int main()
 
 
     while (ch != 112) // Loop infinito
+{
+    if (!game_over) 
     {
-        if (!game_over) 
-        {
-            if (timerTimeOver() == 1){
-                printScore();
-                screenUpdate();
-                int newX = x + incX;
-                int newY = y + incY;
+        if (timerTimeOver() == 1){
+            printScore();
+            screenUpdate();
+           
+            int newX = x + incX;
+            int newY = y + incY;
 
-                ColisaoBloco(newX, newY, x, y);
-                
-                
+            int newX2 = x2 + incX2;
+            int newY2 = y2 + incY2;
 
-                if (newX >= (MAXX -strlen("⚪")-2) || newX <= MINX+2) incX = -incX;
-                
-                if (newY >= MAXY-1 || newY <= MINY+1) incY = -incY;
+            int newYpoder = ypoder + incYpoder;
 
-                if (newY == BAR_Y-1 && (newX >= BAR_MIN_X-2 && newX <= BAR_MAX_X+2)) {
-                    incY = -incY;
-                    if (newX < BAR_MIN_X + 4) {
-                        incX = -1; // Mudar para a esquerda
-                    } 
-                    else if(newX > BAR_MIN_X +5){
-                        incX = 1; // Mudar para a direita
-                    } else {
-                        incX = 0;
-                        incY = -1;
-                    }
+            ColisaoBloco(newX, newY, x, y);
+            ColisaoBloco2(newX2, newY2, x2, y2);
+
+            
+            
+            if (newX >= (MAXX -strlen("⚪")-2) || newX <= MINX+2) incX = -incX;
+            
+            if (newY >= MAXY-1 || newY <= MINY+1) incY = -incY;
+
+            if (newY == BAR_Y-1 && (newX >= BAR_MIN_X-2 && newX <= BAR_MAX_X+2)) {
+                incY = -incY;
+                if (newX < BAR_MIN_X + 4) {
+                    incX = -1; // Mudar para a esquerda
+                } 
+                else if(newX > BAR_MIN_X +5){
+                    incX = 1; // Mudar para a direita
+                } else {
+                    incX = 0;
+                    incY = -1;
                 }
-
-                printBlocos();
-                printBall(newX, newY);
-
-                if (keyhit()) {
-                    ch = readch();
-                    printBarra(ch);
-                    screenUpdate();
-                }
-
-                if (y >= 23) {
-                    screenGotoxy(37, 10);
-                    screenSetColor(RED, DARKGRAY);
-                    printf("FIM DE JOGO");
-                    game_over = true;
-                    salvarScoreNoArquivo(nome, cont_score); // Salvar o score no arquivo quando o jogo termina
-                }
-                
-                screenUpdate();
             }
-        }
-        else // Se game_over for verdadeiro
-        {
-            // Mantenha o loop rodando para manter a tela congelada
-            // mas não execute a lógica de atualização do jogo
-            ch = readch();
+
+            if (newX2 >= (MAXX -strlen("⚪")-2) || newX2 <= MINX+2) incX2 = -incX2;
+            
+            if (newY2 >= MAXY-1 || newY2 <= MINY+1) incY2 = -incY2;
+
+            if (newY2 == BAR_Y-1 && (newX2 >= BAR_MIN_X-2 && newX2 <= BAR_MAX_X+2)) {
+                incY2 = -incY2;
+                if (newX2 < BAR_MIN_X + 4) {
+                    incX2 = -1; // Mudar para a esquerda
+                } 
+                else if(newX2 > BAR_MIN_X +5){
+                    incX2 = 1; // Mudar para a direita
+                } else {
+                    incX2 = 0;
+                    incY2 = -1;
+                }
+            }
+
+            if (poderAleatorio == 1){
+                if (newYpoder >= BAR_Y && (xpoder >= BAR_MIN_X-2 && xpoder <= BAR_MAX_X+2)) {
+                    b2 = true;
+                }
+            }
+            
+            else if (poderAleatorio == 2){
+                if (newYpoder >= BAR_Y && (xpoder >= BAR_MIN_X-2 && xpoder <= BAR_MAX_X+2)) {
+                    overdrive = true;
+                }
+            }
+
+            if (newYpoder >= MAXY){
+                poderAleatorio = 0;
+                screenGotoxy(xpoder,ypoder);
+                printf("  ");
+                ypoder = 16;
+            }
+
+            screenGotoxy(40, 3);
+            printf("contador: %d", contPoder);
+            
+
+            printBlocos();
+            printBall(newX, newY);
+
+        
+            if (keyhit()) {
+                ch = readch();
+                printBarra(ch);
+                screenUpdate();
+                if (ch == 111){
+                    b2 = true; /*ideia para a bola extra ⏺️*/
+                }
+                else if (ch == 105){
+                    overdrive = true; /*ideia para overdrive 🔥/💥  105 ~= 5s */
+                }
+                else if (ch == 110){
+                    game_over = true; /*tecla n para der game over*/
+                }
+            }
+
+            contadorPoderes();
+            if (poderAleatorio == 1){
+                pritandoPoder1(xpoder, newYpoder);
+            }
+            if (poderAleatorio == 2){
+                pritandoPoder2(xpoder, newYpoder);
+            }
+            printBall2(newX2, newY2);
+            
+
+            if (y >= 23) {
+                screenGotoxy(37, 10);
+                screenSetColor(RED, DARKGRAY);
+                printf("FIM DE JOGO");
+                game_over = true;
+                salvarScoreNoArquivo(nome, cont_score); // Salvar o score no arquivo quando o jogo termina
+            }
+            
             screenUpdate();
         }
     }
+    else // Se game_over for verdadeiro
+    {
+        // Mantenha o loop rodando para manter a tela congelada
+        // mas não execute a lógica de atualização do jogo
+        ch = readch();
+        screenUpdate();
+    }
+}
 
     keyboardDestroy();
     screenDestroy();
