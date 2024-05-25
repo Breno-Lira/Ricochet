@@ -107,6 +107,9 @@ int main()
         if (timerTimeOver() == 1){
             printScore();
             screenUpdate();
+
+            screenGotoxy(86,23);
+            printf("|");
            
             int newX = x + incX;
             int newY = y + incY;
