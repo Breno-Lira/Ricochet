@@ -23,6 +23,10 @@ int BAR_MIN_X = 35;
 int BAR_MAX_X = 46;
 int BAR_Y = MAXY - 1;
 
+int modo;
+int rodada = 1;
+int contBC = 0;
+
 int poderAleatorio = 0;
 
 int x = 40, y = 21;
@@ -108,8 +112,17 @@ int main()
             printScore();
             screenUpdate();
 
+            if (modo == 2){
+                screenGotoxy(40,3);
+                printf("Ilimitado rodada: %d %d", rodada, contBC);
+            }
+            else{
+                screenGotoxy(40,3);
+                printf("Normal %d", modo);
+            }
+
             screenGotoxy(86,23);
-            printf("|");
+            printf("│");
            
             int newX = x + incX;
             int newY = y + incY;
@@ -225,7 +238,7 @@ int main()
                 ch = readch();
                 printBarra(ch);
                 screenUpdate();
-                /*if (ch == 111){
+                if (ch == 111){
                     b2 = true; 
                 }
                 else if (ch == 105){
@@ -233,7 +246,7 @@ int main()
                 }
                 else if (ch == 117){
                     frost = true; 
-                }*/
+                }
             }
 
             contadorPoderes();
@@ -258,12 +271,28 @@ int main()
                 salvarScoreNoArquivo(nome, cont_score); // Salvar o score no arquivo quando o jogo termina
             }
 
-            if (cont_score == 2700){
-                screenGotoxy(37, 12);
-                screenSetColor(YELLOW, DARKGRAY);
-                printf("VOCÊ GANHOU!");
-                game_over = true;
-                salvarScoreNoArquivo(nome, cont_score); // Salvar o score no arquivo quando o jogo termina
+            if (modo == 1){
+                if (cont_score == 2700){
+                    screenGotoxy(37, 12);
+                    screenSetColor(YELLOW, DARKGRAY);
+                    printf("VOCÊ GANHOU!");
+                    game_over = true;
+                    salvarScoreNoArquivo(nome, cont_score); // Salvar o score no arquivo quando o jogo termina
+                }
+            }
+
+            contBC = 0;
+            for (int b=0; b < 6; b++){
+                for(int c=0; c<9; c++){
+                    contBC += blocos[b][c];
+                }
+            }
+            
+
+            if (modo == 2 && contBC <= 0){
+                preencherMatriz();
+                contBC = 0;
+                rodada++;
             }
             
             screenUpdate();
@@ -294,11 +323,12 @@ int gerarNumeroAleatorio() {
     return (rand() % 3) + 1;
 }
 
-// Função para preencher a matriz com números aleatórios de 1 a 6
+// Função para preencher a matriz com números aleatórios de 1 a 3
 void preencherMatriz() {
     for (int i = 0; i < 6; i++) {
         for (int j = 0; j < 9; j++) {
             blocos[i][j] = gerarNumeroAleatorio();
+            contBC += blocos[i][j];
         }
     }
 }
@@ -323,6 +353,7 @@ void telaInicial() {
     printf("Digite seu nome: ");
     char ch;
     int i = 0;
+    
 
     while ((ch = getchar()) != '\n' && i < sizeof(nome) - 1) {
         nome[i++] = ch;
@@ -330,8 +361,29 @@ void telaInicial() {
         screenUpdate();
     }
     nome[i] = '\0';
-    screenGotoxy(30, 16);
-    printf("                                                    ");
+    screenGotoxy(30, 12);
+    printf("                                                        ");
+
+    screenGotoxy(28, 12);
+    printf("Escolha o modo de jogo: ");
+
+    screenGotoxy(28, 14);
+    printf("(1)Modo Normal");
+    screenGotoxy(28, 15);
+    printf("(2)Modo infinito");
+    
+    screenGotoxy(53, 12);
+    scanf("%d", &modo);
+    
+    screenGotoxy(53, 12);
+    printf("               ");
+
+    screenGotoxy(28, 12);
+    printf("                     ");
+    screenGotoxy(28, 14);
+    printf("                 ");
+    screenGotoxy(28, 15);
+    printf("                  ");
     
     screenGotoxy(29, 20);
     printf("Pressione ESPACO para iniciar!");
@@ -659,9 +711,15 @@ void ColisaoBloco2(int ballX2, int ballY2, int x2, int y2) {
             int blockRow = ballY2 - 5; // Ajuste para a nova posição dos blocos
             int blockCol = (ballX2 - 3) / 9;
             if (blockCol >= 0 && blockCol < 9 && blocos[blockRow][blockCol] != 0) {
-                blocos[blockRow][blockCol] -= 1; // Remover bloco
-                incY2 = -incY2; // Inverter direção da bola
-                printBlocos(); // Redesenhar blocos
+                if (blocos[blockRow][blockCol] == 4){
+                        blocos[blockRow][blockCol] = 0; // Remover bloco
+                        incY2 = -incY2;
+                }
+                else{
+                    blocos[blockRow][blockCol] -= 1; // Remover bloco
+                    incY2 = -incY2; // Inverter direção da bola
+                    printBlocos(); // Redesenhar blocos
+                }
             }
         }
     }
@@ -670,9 +728,15 @@ void ColisaoBloco2(int ballX2, int ballY2, int x2, int y2) {
             int blockRow = ballY2 - 3; // Ajuste para a nova posição dos blocos
             int blockCol = (ballX2 - 3) / 9;
             if ((blockCol >= 0 || blockCol < 9) && blocos[blockRow][blockCol] > 0) {
+                if (blocos[blockRow][blockCol] == 4){
+                        blocos[blockRow][blockCol] = 0; // Remover bloco
+                        incY2 = -incY2;
+                }
+                else{
                 blocos[blockRow][blockCol] -= 1; // Remover bloco
                 incY2 = -incY2; // Inverter direção da bola
                 printBlocos(); // Redesenhar blocos
+                }
             }
         }
     }
@@ -685,9 +749,15 @@ void ColisaoBloco3(int ballX3, int ballY3, int x3, int y3) {
             int blockRow = ballY3 - 5; // Ajuste para a nova posição dos blocos
             int blockCol = (ballX3 - 3) / 9;
             if (blockCol >= 0 && blockCol < 9 && blocos[blockRow][blockCol] != 0) {
+                if (blocos[blockRow][blockCol] == 4){
+                        blocos[blockRow][blockCol] = 0; // Remover bloco
+                        incY3 = -incY3;
+                }
+                else{
                 blocos[blockRow][blockCol] -= 1; // Remover bloco
                 incY3 = -incY3; // Inverter direção da bola
                 printBlocos(); // Redesenhar blocos
+                }
             }
         }
     }
@@ -696,9 +766,15 @@ void ColisaoBloco3(int ballX3, int ballY3, int x3, int y3) {
             int blockRow = ballY3 - 3; // Ajuste para a nova posição dos blocos
             int blockCol = (ballX3 - 3) / 9;
             if ((blockCol >= 0 || blockCol < 9) && blocos[blockRow][blockCol] > 0) {
+                if (blocos[blockRow][blockCol] == 4){
+                        blocos[blockRow][blockCol] = 0; // Remover bloco
+                        incY3 = -incY3;
+                }
+                else{
                 blocos[blockRow][blockCol] -= 1; // Remover bloco
                 incY3 = -incY3; // Inverter direção da bola
                 printBlocos(); // Redesenhar blocos
+                }
             }
         }
     }
