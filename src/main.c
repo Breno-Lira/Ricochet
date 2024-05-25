@@ -42,6 +42,7 @@ int contPoderV2 = 0;
 bool game_over = false;
 bool b2 = false;
 bool overdrive = false;
+bool frost = false;
 bool poderEmqueda = false;
 
 int blocos[6][9];
@@ -120,11 +121,14 @@ void printBall(int nextX, int nextY){
     x = nextX;
     y = nextY;
     screenGotoxy(x, y);
-    if (overdrive == false){
+    if (overdrive == false && frost == false){
         printf("⚪");
     }
-    else{
+    else if (overdrive == true){
         printf("🔴");
+    }
+    else if (frost == true){
+        printf("🔵");
     } 
 }
 
@@ -218,7 +222,14 @@ void printBlocos() {
                 printf("🟨🟨🟨🟨 ");
             } else if (blocos[l][c] == 1) {
                 printf("🟨🟨🟨🟨");
-            } else {
+            }
+            else if (c + 1 != 9 && blocos[l][c] == 4) {
+                printf("🟦🟦🟦🟦 ");
+            }
+            else if (blocos[l][c] == 4) {
+                printf("🟦🟦🟦🟦");
+            }
+            else {
                 printf("         ");
             }
         }
@@ -232,8 +243,8 @@ void gerarPoder(){
         screenGotoxy(40,2);
         printf("  ");
         printf("%d", powerup);
-        if (powerup <= 3){
-            poderAleatorio = rand() % 2 + 1;
+        if (powerup <= 5){
+            poderAleatorio = rand() % 3 + 1;
             poderEmqueda = true;
         }
 
@@ -251,7 +262,7 @@ void pritandoPoder1(int nextXP, int nextYP){
                 contPoderV2 += 5;
             }
             screenGotoxy(xpoder, ypoder);
-            printf("⏺️");
+            printf("🧪");
         }
         else{
             poderEmqueda = false;
@@ -278,25 +289,54 @@ void pritandoPoder2(int nextXP, int nextYP){
 
 }
 
+void pritandoPoder3(int nextXP, int nextYP){
+        if (overdrive == false){
+        screenSetColor(WHITE, DARKGRAY);
+        screenGotoxy(xpoder, ypoder);
+        printf("   ");
+        contPoderV++;
+        if (contPoderV >= contPoderV2){
+        ypoder = nextYP;
+        contPoderV2 += 5;
+        }
+        screenGotoxy(xpoder, ypoder);
+        printf("❄️");
+        }
+        else{
+            poderEmqueda = false;
+        }
+
+}
+
 void ColisaoBloco(int ballX, int ballY, int x, int y) {
     if(y > ballY){
          if (ballY >= 5 && ballY <= 10) { // Limites verticais ajustados para o espaço abaixo dos blocos
             int blockRow = ballY - 5; // Ajuste para a nova posição dos blocos
             int blockCol = (ballX - 3) / 9;
-            if (blockCol >= 0 && blockCol < 9 && blocos[blockRow][blockCol] != 0) {
-                if (overdrive == false){
-                blocos[blockRow][blockCol] -= 1; // Remover bloco
-                incY = -incY; // Inverter direção da bola
-                if (blocos[blockRow][blockCol] == 0){
-                    if (poderEmqueda == false){
-                    xpoder = x;
-                    ypoder = y;
-                    gerarPoder();
+            if (blockCol >= 0 && blockCol < 9 && blocos[blockRow][blockCol] > 0) {
+                if (overdrive == false && frost == false){
+                    if (blocos[blockRow][blockCol] == 4){
+                        blocos[blockRow][blockCol] = 0; // Remover bloco
+                        incY = -incY;
                     }
-                }
+                    else if (b2 == true){
+                        blocos[blockRow][blockCol] -= 1; // Remover bloco
+                        incY = -incY; // Inverter direção da bola
+                    }
+                    else{
+                        blocos[blockRow][blockCol] -= 1; // Remover bloco
+                        incY = -incY; // Inverter direção da bola
+                        if (blocos[blockRow][blockCol] == 0){
+                            if (poderEmqueda == false){
+                            xpoder = x;
+                            ypoder = y;
+                            gerarPoder();
+                            }
+                        }
+                    }
                 printBlocos(); // Redesenhar blocos
                 }
-                else{
+                else if (overdrive == true){
                     if (blocos[blockRow][blockCol] == 3){
                         blocos[blockRow][blockCol] = 1;
                         incY = -incY;
@@ -306,6 +346,17 @@ void ColisaoBloco(int ballX, int ballY, int x, int y) {
                     }
                     printBlocos();
                 }
+                else if (frost == true){
+                    for(int a = 0; a < 9; a++ ){
+                        if (!(blocos[blockRow][a] == 0)){
+                            blocos[blockRow][a] = 4;
+                        }
+                        incY = -incY;
+                        frost = false;
+                    }
+                    printBlocos();
+                }
+                
             }
         }
     }
@@ -313,13 +364,19 @@ void ColisaoBloco(int ballX, int ballY, int x, int y) {
         if (ballY >= 3 && ballY <= 8) { // Limites verticais ajustados para o espaço abaixo dos blocos
             int blockRow = ballY - 3; // Ajuste para a nova posição dos blocos
             int blockCol = (ballX - 3) / 9;
-            if ((blockCol >= 0 || blockCol < 9) && blocos[blockRow][blockCol] > 0) {
-                if (overdrive == false){
-                    blocos[blockRow][blockCol] -= 1; // Remover bloco
-                    incY = -incY; // Inverter direção da bola
-                    printBlocos(); // Redesenhar blocos
+            if (blockCol >= 0 && blockCol < 9 && blocos[blockRow][blockCol] > 0) {
+                if (overdrive == false && frost == false){
+                    if (blocos[blockRow][blockCol] == 4){
+                        blocos[blockRow][blockCol] = 0; // Remover bloco
+                        incY = -incY;
+                    }
+                    else{
+                        blocos[blockRow][blockCol] -= 1; // Remover bloco
+                        incY = -incY; // Inverter direção da bola
+                    }
+                printBlocos(); // Redesenhar blocos
                 }
-                else{
+                else if (overdrive == true){
                     if (blocos[blockRow][blockCol] == 3){
                         blocos[blockRow][blockCol] = 1;
                         incY = -incY;
@@ -327,8 +384,19 @@ void ColisaoBloco(int ballX, int ballY, int x, int y) {
                     else{
                         blocos[blockRow][blockCol] = 0;
                     }
-                    printBlocos(); // Redesenhar blocos
+                    printBlocos();
                 }
+                else if (frost == true){
+                    for(int a = 0; a < 9; a++ ){
+                        if (!(blocos[blockRow][a] == 0)){
+                            blocos[blockRow][a] = 4;
+                        }
+                        incY = -incY;
+                        frost = false;
+                    }
+                    printBlocos();
+                }
+                
             }
         }
     
@@ -563,6 +631,16 @@ int main()
                 }
             }
 
+            else if (poderAleatorio == 3){
+                if (newYpoder >= BAR_Y && (xpoder >= BAR_MIN_X-2 && xpoder <= BAR_MAX_X+2)) {
+                    frost = true;
+                    poderEmqueda = false;
+                    screenGotoxy(xpoder,ypoder);
+                    printf("  ");
+                    ypoder = 1;
+                }
+            }
+
             if (newYpoder >= MAXY){
                 poderAleatorio = 0;
                 screenGotoxy(xpoder,ypoder);
@@ -589,18 +667,23 @@ int main()
                 else if (ch == 105){
                     overdrive = true; /*ideia para overdrive 🔥/💥  105 ~= 5s */
                 }
-                else if (ch == 110){
-                    game_over = true; /*tecla n para der game over*/
+                else if (ch == 117){
+                    frost = true; /*tecla n para der game over*/
                 }
             }
 
             contadorPoderes();
+            
             if (poderEmqueda == true && poderAleatorio == 1){
                 pritandoPoder1(xpoder, newYpoder);
             }
             if (poderEmqueda == true && poderAleatorio == 2){
                 pritandoPoder2(xpoder, newYpoder);
             }
+            if (poderEmqueda == true && poderAleatorio == 3){
+                pritandoPoder3(xpoder, newYpoder);
+            }
+        
             printBall2(newX2, newY2);
             
 
