@@ -31,7 +31,7 @@ int incX = 1, incY = -1;
 int x2 = 40, y2 = 20;
 int incX2 = 1, incY2 = -1;
 
-int xpoder = 20, ypoder = 16, tempoder;
+int xpoder = 20, ypoder = 12, tempoder;
 int incXpoder = 0, incYpoder = 1;
 
 int cont_score = 0;
@@ -117,7 +117,6 @@ void printBall(int nextX, int nextY){
     screenGotoxy(x, y);
     printf("   ");
     x = nextX;
-    
     y = nextY;
     screenGotoxy(x, y);
     if (overdrive == false){
@@ -292,14 +291,20 @@ void ColisaoBloco(int ballX, int ballY, int x, int y) {
                 blocos[blockRow][blockCol] -= 1; // Remover bloco
                 incY = -incY; // Inverter direção da bola
                 if (blocos[blockRow][blockCol] == 0){
-                xpoder = x;
-                ypoder = y;
-                gerarPoder();
+                    xpoder = x;
+                    ypoder = y;
+                    gerarPoder();
                 }
                 printBlocos(); // Redesenhar blocos
                 }
                 else{
-                    blocos[blockRow][blockCol] = 0; // Remover bloco
+                    if (blocos[blockRow][blockCol] == 3){
+                        blocos[blockRow][blockCol] = 1;
+                        incY = -incY;
+                    }
+                    else{
+                        blocos[blockRow][blockCol] = 0;
+                    }
                     printBlocos();
                 }
             }
@@ -316,7 +321,13 @@ void ColisaoBloco(int ballX, int ballY, int x, int y) {
                     printBlocos(); // Redesenhar blocos
                 }
                 else{
-                    blocos[blockRow][blockCol] = 0; // Remover bloco
+                    if (blocos[blockRow][blockCol] == 3){
+                        blocos[blockRow][blockCol] = 1;
+                        incY = -incY;
+                    }
+                    else{
+                        blocos[blockRow][blockCol] = 0;
+                    }
                     printBlocos(); // Redesenhar blocos
                 }
             }
