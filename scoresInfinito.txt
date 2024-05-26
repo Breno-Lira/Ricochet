@@ -1,6 +1,1 @@
-lpa 750
-puts 1650
-sorsaar 2750
-aopssdvd 100
-djsbodfbvdo 2350
-pss 50
+
