@@ -64,10 +64,21 @@ gcc ./src/*.c -I./include -o Ricochet.out
 ❄️ Freeze: ao pegar esse power up a bolinha ficará 🔵 e quando tocar em algum bloco toda a linha ficará com 1 de vida e na cor azul
 <br>
 <br>
+<div align="center"><img src="https://github.com/Breno-Lira/Ricochet/assets/142419627/9dcafc06-322e-4ecc-beda-fe47a846ea1f"></div>
+
+<br>
+<br>
 💥 Overdrive: ao pegar esse power up a bolinha ficará 🔴 e quebrará todos os blocos com menos de 3 de vida, para os blocos com 3, deixará com apenas 1
 <br>
 <br>
+<div align="center"><img src="https://github.com/Breno-Lira/Ricochet/assets/142419627/a0785243-ee35-4764-966a-cae58f5285e3"></div>
+<br>
+<br>
 🧪 Clone: ao pegar esse power up serão geradas mais 2 bolinhas na cor 🟢, terão as mesmas funções da bola branca
+<br>
+<br>
+<br>
+<div align="center"><img src="https://github.com/Breno-Lira/Ricochet/assets/142419627/250a2387-7fdd-41b9-9422-e8e3da9484a8"></div>
 <br>
 <br>
 
