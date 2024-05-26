@@ -480,6 +480,8 @@ void printBarra(int ch) {
             }
             
             for (int i = BAR_MIN_X; i <= BAR_MAX_X; i++) {
+                screenGotoxy(86,23);
+                printf("│");
                 screenGotoxy(i, BAR_Y);
                 printf("T");
             }
@@ -501,6 +503,8 @@ void printBarra(int ch) {
                 BAR_MAX_X += (-4);
             }
             for (int i = BAR_MIN_X; i <= BAR_MAX_X; i++) {
+                screenGotoxy(86,23);
+                printf("│");
                 screenGotoxy(i, BAR_Y);
                 printf("T");
             }
