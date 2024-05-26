@@ -415,10 +415,18 @@ void telaInicial() {
     
     screenGotoxy(29, 20);
     printf("Pressione ESPACO para iniciar!");
-    screenGotoxy(38, 10);
-    printf("PLACAR 🏆");
-    LerDados();
-    screenUpdate();
+    if (modo == 2){
+        screenGotoxy(32, 10);
+        printf("PLACAR ILIMITADO🏆");
+        LerDados();
+        screenUpdate();
+    }
+    else{
+        screenGotoxy(38, 10);
+        printf("PLACAR 🏆");
+        LerDados();
+        screenUpdate();
+    }
 
     while (1) {
         if (keyhit()) {
@@ -850,15 +858,28 @@ void salvarScoreNoArquivo(const char* nome, int score) {
 
 
 void LerDados(){
-    struct dados *head = NULL;
-    FILE* arquivo = fopen("scores.txt", "r");
-    char name[50];
-    int pont;
-    while(fscanf(arquivo, "%s %d", name, &pont) != EOF){
-        inserir(&head, name, pont);
+    if (modo == 2){
+        struct dados *head = NULL;
+        FILE* arquivo = fopen("scoresInfinito.txt", "r");
+        char name[50];
+        int pont;
+        while(fscanf(arquivo, "%s %d", name, &pont) != EOF){
+            inserir(&head, name, pont);
+        }
+        fclose(arquivo);
+        PrintDados(head);
     }
-    fclose(arquivo);
-    PrintDados(head);
+    else{
+        struct dados *head = NULL;
+        FILE* arquivo = fopen("scores.txt", "r");
+        char name[50];
+        int pont;
+        while(fscanf(arquivo, "%s %d", name, &pont) != EOF){
+            inserir(&head, name, pont);
+        }
+        fclose(arquivo);
+        PrintDados(head);
+    }
 }
 
 

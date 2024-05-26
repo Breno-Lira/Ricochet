@@ -13,3 +13,4 @@ opad 300
 ipoaod 2650
 opadadacc 2700
 opsfosdovmd 2700
+opsd 2700

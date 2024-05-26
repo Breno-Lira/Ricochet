@@ -1,2 +1,4 @@
 opada 3100
 padoad 3000
+locasdd 16500
+opad 3050
