@@ -30,7 +30,7 @@ int contBC = 0;
 int poderAleatorio = 0;
 
 int x = 40, y = 21;
-int incX = 1, incY = -1;
+int incX = 0, incY = -1;
 
 int x2 = 41, y2 = 20;
 int incX2 = 1, incY2 = -1;
@@ -113,6 +113,8 @@ int main()
             screenUpdate();
 
             if (modo == 2){
+                screenGotoxy(40,3);
+                printf("Ilimitado rodada:                 ");
                 screenGotoxy(40,3);
                 printf("Ilimitado rodada: %d %d", rodada, contBC);
             }
@@ -247,6 +249,19 @@ int main()
                 else if (ch == 117){
                     frost = true; 
                 }
+                else if (ch == 108){
+                    for (int i = 0; i < 6; i++) {
+                        for (int j = 0; j < 9; j++) {
+                            if (i == 1 && j == 4){
+                            blocos[i][j] = 1;
+                            }
+                            else{
+                                blocos[i][j] = 0;
+                            }
+                        }
+                    }
+                }
+                
             }
 
             contadorPoderes();
@@ -267,8 +282,19 @@ int main()
                 screenGotoxy(37, 12);
                 screenSetColor(RED, DARKGRAY);
                 printf("FIM DE JOGO!");
-                game_over = true;
-                salvarScoreNoArquivo(nome, cont_score); // Salvar o score no arquivo quando o jogo termina
+                screenGotoxy(35, 14);
+                if (rodada == 1){
+                    printf("Score final: %d", cont_score);
+                    game_over = true;
+                    salvarScoreNoArquivo(nome, cont_score); // Salvar o score no arquivo quando o jogo termina
+                }
+                else if (rodada > 1){
+                    int cont_scoreINF = cont_score+((rodada-1)*2700);
+                    printf("Score final: %d", cont_scoreINF);
+                    game_over = true;
+                    salvarScoreNoArquivo(nome, cont_scoreINF); // Salvar o score no arquivo quando o jogo termina
+                }
+                
             }
 
             if (modo == 1){
@@ -276,6 +302,8 @@ int main()
                     screenGotoxy(37, 12);
                     screenSetColor(YELLOW, DARKGRAY);
                     printf("VOCÊ GANHOU!");
+                    screenGotoxy(35, 14);
+                    printf("Score final: %d", cont_score);
                     game_over = true;
                     salvarScoreNoArquivo(nome, cont_score); // Salvar o score no arquivo quando o jogo termina
                 }
@@ -798,15 +826,26 @@ void printScore() {
             }
         }
     }
+    printf("Score:                ");
+    screenGotoxy(3, 2);
     printf("Score: %d", cont_score);
 }
 
 void salvarScoreNoArquivo(const char* nome, int score) {
-    FILE* arquivo = fopen("scores.txt", "a");
-    if (arquivo != NULL) {
-        fprintf(arquivo, "%s %d\n", nome, score);
-        fclose(arquivo);
-    } 
+    if (modo == 2){
+        FILE* arquivo2 = fopen("scoresInfinito.txt", "a");
+        if (arquivo2 != NULL) {
+            fprintf(arquivo2, "%s %d\n", nome, score);
+            fclose(arquivo2);
+        } 
+    }
+    else{
+        FILE* arquivo = fopen("scores.txt", "a");
+        if (arquivo != NULL) {
+            fprintf(arquivo, "%s %d\n", nome, score);
+            fclose(arquivo);
+        }
+    }
 }
 
 
