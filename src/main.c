@@ -6,6 +6,8 @@
 #include "screen.h"
 #include "keyboard.h"
 #include "timer.h"
+#include <termios.h>
+#include <unistd.h>
 
 struct dados{
     char nome[50];
@@ -78,7 +80,7 @@ void LerDados();
 void inserir(struct dados **head, char *nome, int pontos);
 void PrintDados(struct dados *head);
 void contadorPoderes();
-
+void set_input_mode(void);
 
 int main() 
 {
@@ -116,7 +118,7 @@ int main()
                 screenGotoxy(36,2);
                 printf("Ilimitado rodada:                 ");
                 screenGotoxy(36,2);
-                printf("Ilimitado rodada: %d", rodada);
+                printf("Infinito rodada: %d", rodada);
             }
             else{
                 screenGotoxy(40,2);
@@ -315,12 +317,26 @@ int main()
                     contBC += blocos[b][c];
                 }
             }
-            
 
+            if (rodada > 1 && rodada < 4){
+                timerInit(45);
+            }
+            else if (rodada >= 4){
+                timerInit(40);
+            }
+
+        
             if (modo == 2 && contBC <= 0){
                 preencherMatriz();
                 contBC = 0;
                 rodada++;
+                x = 40;
+                y = 21;
+                screenGotoxy(BAR_MIN_X, BAR_Y);
+                printf("           ");
+                BAR_MIN_X = 35;
+                BAR_MAX_X = 46;
+                printBarra(ch);
             }
             
             screenUpdate();
@@ -400,8 +416,14 @@ void telaInicial() {
     screenGotoxy(28, 15);
     printf("(2)Modo infinito");
     
-    screenGotoxy(53, 12);
-    scanf("%d", &modo);
+
+    char chModo = getchar();
+    if (chModo == '2'){
+        modo = 2;
+    }
+    else{
+        modo = 1;
+    }
     
     screenGotoxy(53, 12);
     printf("               ");
@@ -412,18 +434,19 @@ void telaInicial() {
     printf("                 ");
     screenGotoxy(28, 15);
     printf("                  ");
+
     
     screenGotoxy(29, 20);
     printf("Pressione ESPACO para iniciar!");
     if (modo == 2){
         screenGotoxy(32, 10);
-        printf("PLACAR ILIMITADO🏆");
+        printf("PLACAR INFINITO🏆");
         LerDados();
         screenUpdate();
     }
     else{
         screenGotoxy(38, 10);
-        printf("PLACAR 🏆");
+        printf("PLACAR NORMAL🏆");
         LerDados();
         screenUpdate();
     }
@@ -952,6 +975,16 @@ void contadorPoderes(){
             contPoder = 0;
         }
     }
+}
 
 
+void set_input_mode(void) {
+    struct termios tattr;
+
+    // Obter atributos do terminal
+    tcgetattr(STDIN_FILENO, &tattr);
+    // Desativar modo canônico e eco
+    tattr.c_lflag &= ~(ICANON | ECHO);
+    // Definir atributos do terminal
+    tcsetattr(STDIN_FILENO, TCSANOW, &tattr);
 }
