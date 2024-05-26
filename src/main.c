@@ -58,42 +58,42 @@ int blocos[6][9];
 
 char nome[100]; // Nome do jogador armazenado aqui
 
-void inicializarSemente();
+void inicializarSemente(); //Inicia semente para gerar numero aleatorio
 int gerarNumeroAleatorio(); // Função para gerar um número aleatório entre 1 e 3
-void preencherMatriz(); // Função para preencher a matriz com números aleatórios de 1 a 6
-void telaInicial();
-void printBall(int nextX, int nextY);
-void printBall2(int nextX2, int nextY2);
-void printBall3(int nextX3, int nextY3);
-void printBarra(int ch);
-void printBlocos();
-void gerarPoder();
-void pritandoPoder1(int nextXP, int nextYP);
-void pritandoPoder2(int nextXP, int nextYP);
-void pritandoPoder3(int nextXP, int nextYP);
-void ColisaoBloco(int ballX, int ballY, int x, int y);  
-void ColisaoBloco2(int ballX2, int ballY2, int x2, int y2);
-void ColisaoBloco3(int ballX3, int ballY3, int x3, int y3);
-void printScore();
-void salvarScoreNoArquivo(const char* nome, int score);
-void LerDados();
-void inserir(struct dados **head, char *nome, int pontos);
-void PrintDados(struct dados *head);
-void contadorPoderes();
-void set_input_mode(void);
+void preencherMatriz(); // Função para preencher a matriz com números aleatórios de 1 a 3
+void telaInicial(); //Função que inicia a tela inicial
+void printBall(int nextX, int nextY); // Função que printa a bola principal
+void printBall2(int nextX2, int nextY2); // Função que printa a bola clone 1
+void printBall3(int nextX3, int nextY3); // Função que printa a bola colne 2
+void printBarra(int ch); // Função que printa a barra
+void printBlocos(); // Função que printa  os Blocos
+void gerarPoder(); // Função usanda para a chance de um poder aparecer
+void pritandoPoder1(int nextXP, int nextYP); // Função para printar o icone do clone
+void pritandoPoder2(int nextXP, int nextYP); // Função para printar o icone do overdrive
+void pritandoPoder3(int nextXP, int nextYP); // Função para printar o icone do freeze
+void ColisaoBloco(int ballX, int ballY, int x, int y); // Função para definir a colisão da bola principal com os blocos
+void ColisaoBloco2(int ballX2, int ballY2, int x2, int y2); // Função para definir a colisão da bola clone 1 com os blocos
+void ColisaoBloco3(int ballX3, int ballY3, int x3, int y3); // Função para definir a colisão da bola clone 2 com os blocos
+void printScore(); // Função para calcular e printar o score na tela
+void salvarScoreNoArquivo(const char* nome, int score); // Função para salvar o nome e score no arquivo txt
+void LerDados();// Função que lê os dados dos arquivos txt
+void inserir(struct dados **head, char *nome, int pontos); // Função que salva os dados no arquivo
+void PrintDados(struct dados *head); //Função para printar na tela as informações presentes no arquivo txt
+void contadorPoderes(); //Função de timer de cada poder
+void set_input_mode(void); //Função usada para escolha de modo se automatizado
 
 int main() 
 {
-    static int ch = 0;
-    inicializarSemente();
-    preencherMatriz();
-    screenInit(1);
-    keyboardInit();
-    timerInit(50);
+    static int ch = 0; // iniciando a variavel ch 
+    inicializarSemente(); //Chamando a função para inicair a seed
+    preencherMatriz();//Preenchendo a matriz
+    screenInit(1);//Iniciando a tela do jogo
+    keyboardInit();//Iniciando as funções do teclado
+    timerInit(50);//Iniciando a taxe de atualização da tela
     screenGotoxy(x, 22);
     printf("⚪");
     printBarra(ch);
-    telaInicial();
+    telaInicial();//Iniciando a tela inicial
     
     screenInit(1);
     keyboardInit();
@@ -106,49 +106,49 @@ int main()
 
 
 
-    while (ch != 112) // Loop infinito
+    while (ch != 112) // Loop infinito para ao apertar o 'p'
 {
-    if (!game_over) 
+    if (!game_over)//Caso game_over seja false
     {
         if (timerTimeOver() == 1){
             printScore();
             screenUpdate();
 
             if (modo == 2){
-                screenGotoxy(36,2);
+                screenGotoxy(36,2);//Informando o modo na parte de cima daa tela
                 printf("Ilimitado rodada:                 ");
                 screenGotoxy(36,2);
                 printf("Infinito rodada: %d", rodada);
             }
             else{
-                screenGotoxy(40,2);
+                screenGotoxy(40,2);//Informando o modo na parte de cima daa tela
                 printf("Normal");
             }
 
             screenGotoxy(86,23);
             printf("│");
            
-            int newX = x + incX;
+            int newX = x + incX;//Atualizando a posição da bola principal
             int newY = y + incY;
 
-            int newX2 = x2 + incX2;
+            int newX2 = x2 + incX2;//Atualizando a posição da bola clone 1
             int newY2 = y2 + incY2;
 
-            int newX3 = x3 + incX3;
+            int newX3 = x3 + incX3;//Atualizando a posição da bola clone 2
             int newY3 = y3 + incY3;
 
-            int newYpoder = ypoder + incYpoder;
+            int newYpoder = ypoder + incYpoder;//Atualizando a posição dos icones dos poderes
 
             ColisaoBloco(newX, newY, x, y);
             ColisaoBloco2(newX2, newY2, x2, y2);
             ColisaoBloco3(newX3, newY3, x3, y3);
             
             
-            if (newX >= (MAXX -strlen("⚪")-2) || newX <= MINX+2) incX = -incX;
+            if (newX >= (MAXX -strlen("⚪")-2) || newX <= MINX+2) incX = -incX;//Colisão com os lados da tela
             
-            if (newY >= MAXY-1 || newY <= MINY+1) incY = -incY;
+            if (newY >= MAXY-1 || newY <= MINY+1) incY = -incY;//Colisão com o teto da tela
 
-            if (newY == BAR_Y-1 && (newX >= BAR_MIN_X-2 && newX <= BAR_MAX_X+2)) {
+            if (newY == BAR_Y-1 && (newX >= BAR_MIN_X-2 && newX <= BAR_MAX_X+2)) {//Colisão com a barra
                 incY = -incY;
                 if (newX < BAR_MIN_X + 4) {
                     incX = -1; // Mudar para a esquerda
@@ -196,7 +196,7 @@ int main()
             }
 
             if (poderAleatorio == 1){
-                if (newYpoder >= BAR_Y && (xpoder >= BAR_MIN_X-2 && xpoder <= BAR_MAX_X+2)) {
+                if (newYpoder >= BAR_Y && (xpoder >= BAR_MIN_X-2 && xpoder <= BAR_MAX_X+2)) {//Condição para ativar o poder ao icone encostar na barra 
                     b2 = true;
                     poderEmqueda = false;
                     screenGotoxy(xpoder,ypoder);
@@ -225,12 +225,12 @@ int main()
                 }
             }
 
-            if (newYpoder >= MAXY){
+            if (newYpoder >= MAXY){//Fazendo o poder desaparecer caso o jogador não o pegue
                 poderAleatorio = 0;
                 screenGotoxy(xpoder,ypoder);
                 printf("  ");
                 poderEmqueda = false;
-                ypoder = 1;
+                ypoder = 2;
             }
 
 
@@ -238,10 +238,12 @@ int main()
             printBall(newX, newY);
 
         
-            if (keyhit()) {
+            if (keyhit()) {//Lendo os inputs do jogador
                 ch = readch();
                 printBarra(ch);
                 screenUpdate();
+                //Cheats para teste de funcionalidades
+                /*
                 if (ch == 111){
                     b2 = true; 
                 }
@@ -263,7 +265,7 @@ int main()
                         }
                     }
                 }
-                
+                */
             }
 
             contadorPoderes();
@@ -280,14 +282,14 @@ int main()
             printBall3(newX3, newY3);
             
 
-            if (y >= 23) {
+            if (y >= 23) {//Mensagem de derrota caso a bola bata no chão
                 screenGotoxy(37, 12);
                 screenSetColor(RED, DARKGRAY);
                 printf("FIM DE JOGO!");
                 screenGotoxy(35, 14);
                 if (rodada == 1){
                     printf("Score final: %d", cont_score);
-                    game_over = true;
+                    game_over = true;//Acionando game_over como verdadeiro
                     salvarScoreNoArquivo(nome, cont_score); // Salvar o score no arquivo quando o jogo termina
                 }
                 else if (rodada > 1){
@@ -299,7 +301,7 @@ int main()
                 
             }
 
-            if (modo == 1){
+            if (modo == 1){//Menssagem de jogo concluido apos destruir todos os blocos
                 if (cont_score == 2700){
                     screenGotoxy(37, 12);
                     screenSetColor(YELLOW, DARKGRAY);
@@ -314,11 +316,11 @@ int main()
             contBC = 0;
             for (int b=0; b < 6; b++){
                 for(int c=0; c<9; c++){
-                    contBC += blocos[b][c];
+                    contBC += blocos[b][c];//Contando a 'vida' restante dos blocos
                 }
             }
 
-            if (rodada > 1 && rodada < 4){
+            if (rodada > 1 && rodada < 4){//Aumentando a velocidade do jogo
                 timerInit(45);
             }
             else if (rodada >= 4){
@@ -326,14 +328,14 @@ int main()
             }
 
         
-            if (modo == 2 && contBC <= 0){
+            if (modo == 2 && contBC <= 0){//Preenchendo a matriz novamente no modo infinito
                 preencherMatriz();
                 contBC = 0;
                 rodada++;
                 x = 40;
                 y = 21;
                 screenGotoxy(BAR_MIN_X, BAR_Y);
-                printf("           ");
+                printf("             ");
                 BAR_MIN_X = 35;
                 BAR_MAX_X = 46;
                 printBarra(ch);
@@ -371,7 +373,7 @@ int gerarNumeroAleatorio() {
 void preencherMatriz() {
     for (int i = 0; i < 6; i++) {
         for (int j = 0; j < 9; j++) {
-            blocos[i][j] = gerarNumeroAleatorio();
+            blocos[i][j] = gerarNumeroAleatorio();//Preenchendo matriz com numeros aleatorios
             contBC += blocos[i][j];
         }
     }
@@ -399,7 +401,7 @@ void telaInicial() {
     int i = 0;
     
 
-    while ((ch = getchar()) != '\n' && i < sizeof(nome) - 1) {
+    while ((ch = getchar()) != '\n' && i < sizeof(nome) - 1) {//Recebendo o nome do usuario
         nome[i++] = ch;
         printf("%c", ch);
         screenUpdate();
@@ -417,7 +419,7 @@ void telaInicial() {
     printf("(2)Modo infinito");
     
 
-    char chModo = getchar();
+    char chModo = getchar();//Escolhendo o modo de jogo
     if (chModo == '2'){
         modo = 2;
     }
@@ -451,7 +453,7 @@ void telaInicial() {
         screenUpdate();
     }
 
-    while (1) {
+    while (1) {//Loop ocorre ate que o usuario aperte a SPACEBAR
         if (keyhit()) {
             int ch = readch();
             if (ch == ' ') {
@@ -523,7 +525,7 @@ void printBarra(int ch) {
     }
 
      if (BAR_MAX_X-2 < 82) {
-        if (ch == 100) {
+        if (ch == 100) {//Movimento da barra para direita
 
             screenGotoxy(BAR_MIN_X, 23);
             printf("         ");
@@ -548,7 +550,7 @@ void printBarra(int ch) {
     }
 
     if (BAR_MIN_X > 4) {
-        if (ch == 97) {
+        if (ch == 97) {//Movimento da barra para a esquerda
 
             screenGotoxy(BAR_MAX_X - 3, 23);
             printf("         ");
@@ -575,7 +577,7 @@ void printBlocos() {
     screenSetColor(BLUE, DARKGRAY);
 
     screenGotoxy(4, 4);
-    int y = 5;
+    int ybloco = 5;
 
     for (int l = 0; l < 6; l++) {
         for (int c = 0; c < 9; c++) {
@@ -602,14 +604,14 @@ void printBlocos() {
                 printf("         ");
             }
         }
-        screenGotoxy(4, y);
-        y++;
+        screenGotoxy(4, ybloco);
+        ybloco++;
     }
 }
 
 void gerarPoder(){
         int powerup = rand() % 10 + 1;
-        if (powerup <= 5){
+        if (powerup <= 3){
             poderAleatorio = rand() % 3 + 1;
             poderEmqueda = true;
         }
@@ -674,9 +676,9 @@ void pritandoPoder3(int nextXP, int nextYP){
 }
 
 void ColisaoBloco(int ballX, int ballY, int x, int y) {
-    if(y > ballY){
+    if(y > ballY){//Logica para colisão por baixo dos blocos
          if (ballY >= 5 && ballY <= 10) { // Limites verticais ajustados para o espaço abaixo dos blocos
-            int blockRow = ballY - 5; // Ajuste para a nova posição dos blocos
+            int blockRow = ballY - 5; 
             int blockCol = (ballX - 3) / 9;
             if (blockCol >= 0 && blockCol < 9 && blocos[blockRow][blockCol] > 0) {
                 if (overdrive == false && frost == false){
@@ -685,11 +687,11 @@ void ColisaoBloco(int ballX, int ballY, int x, int y) {
                         incY = -incY;
                     }
                     else if (b2 == true){
-                        blocos[blockRow][blockCol] -= 1; // Remover bloco
+                        blocos[blockRow][blockCol] -= 1; // Remover 1 vida do bloco
                         incY = -incY; // Inverter direção da bola
                     }
                     else{
-                        blocos[blockRow][blockCol] -= 1; // Remover bloco
+                        blocos[blockRow][blockCol] -= 1; // Remover 1 vida do bloco
                         incY = -incY; // Inverter direção da bola
                         if (blocos[blockRow][blockCol] == 0){
                             if (poderEmqueda == false){
@@ -725,9 +727,9 @@ void ColisaoBloco(int ballX, int ballY, int x, int y) {
             }
         }
     }
-    else{
+    else{//Logica para colisão por cima dos blocos
         if (ballY >= 3 && ballY <= 8) { // Limites verticais ajustados para o espaço abaixo dos blocos
-            int blockRow = ballY - 3; // Ajuste para a nova posição dos blocos
+            int blockRow = ballY - 3; 
             int blockCol = (ballX - 3) / 9;
             if (blockCol >= 0 && blockCol < 9 && blocos[blockRow][blockCol] > 0) {
                 if (overdrive == false && frost == false){
@@ -771,7 +773,7 @@ void ColisaoBloco(int ballX, int ballY, int x, int y) {
 void ColisaoBloco2(int ballX2, int ballY2, int x2, int y2) {
     if(y2 > ballY2){
          if (ballY2 >= 5 && ballY2 <= 10) { // Limites verticais ajustados para o espaço abaixo dos blocos
-            int blockRow = ballY2 - 5; // Ajuste para a nova posição dos blocos
+            int blockRow = ballY2 - 5; 
             int blockCol = (ballX2 - 3) / 9;
             if (blockCol >= 0 && blockCol < 9 && blocos[blockRow][blockCol] != 0) {
                 if (blocos[blockRow][blockCol] == 4){
@@ -788,7 +790,7 @@ void ColisaoBloco2(int ballX2, int ballY2, int x2, int y2) {
     }
     else{
         if (ballY2 >= 3 && ballY2 <= 8) { // Limites verticais ajustados para o espaço abaixo dos blocos
-            int blockRow = ballY2 - 3; // Ajuste para a nova posição dos blocos
+            int blockRow = ballY2 - 3; 
             int blockCol = (ballX2 - 3) / 9;
             if ((blockCol >= 0 || blockCol < 9) && blocos[blockRow][blockCol] > 0) {
                 if (blocos[blockRow][blockCol] == 4){
@@ -809,7 +811,7 @@ void ColisaoBloco2(int ballX2, int ballY2, int x2, int y2) {
 void ColisaoBloco3(int ballX3, int ballY3, int x3, int y3) {
     if(y3 > ballY3){
          if (ballY3 >= 5 && ballY3 <= 10) { // Limites verticais ajustados para o espaço abaixo dos blocos
-            int blockRow = ballY3 - 5; // Ajuste para a nova posição dos blocos
+            int blockRow = ballY3 - 5; 
             int blockCol = (ballX3 - 3) / 9;
             if (blockCol >= 0 && blockCol < 9 && blocos[blockRow][blockCol] != 0) {
                 if (blocos[blockRow][blockCol] == 4){
@@ -826,7 +828,7 @@ void ColisaoBloco3(int ballX3, int ballY3, int x3, int y3) {
     }
     else{
         if (ballY3 >= 3 && ballY3 <= 8) { // Limites verticais ajustados para o espaço abaixo dos blocos
-            int blockRow = ballY3 - 3; // Ajuste para a nova posição dos blocos
+            int blockRow = ballY3 - 3; 
             int blockCol = (ballX3 - 3) / 9;
             if ((blockCol >= 0 || blockCol < 9) && blocos[blockRow][blockCol] > 0) {
                 if (blocos[blockRow][blockCol] == 4){
@@ -912,11 +914,11 @@ void inserir(struct dados **head, char *nome, int pontos){
     strcpy(novo->nome, nome);
     novo->pontos = pontos;
     novo->next = NULL;
-    if((*head) == NULL || (*head)->pontos < novo->pontos){
+    if((*head) == NULL || (*head)->pontos <= novo->pontos){//Caso head esteja vazia ou caso seja menor ou igual ao novo valor
         novo->next = *head;
         *head = novo;
     }else{
-        while(temp->next != NULL && temp->next->pontos > novo->pontos){
+        while(temp->next != NULL && temp->next->pontos > novo->pontos){//Percorrendo até achar a posição do novo valor
             temp = temp->next;
         }
         novo->next = temp->next;
@@ -953,7 +955,7 @@ void PrintDados(struct dados *head){
                     printf("😊 score: %d | %s\n",temp->pontos, temp->nome); 
                 }
             }
-            temp = temp->next;
+            temp = temp->next;//Indo para o próximo colocado
             cont++;
             a++;
         }
@@ -963,14 +965,14 @@ void PrintDados(struct dados *head){
 void contadorPoderes(){
     if (overdrive == true){
         contPoder++;
-        if (contPoder > 45){
+        if (contPoder > 70){
             overdrive = false;
             contPoder = 0;
         }
     }
     if (b2 == true){
         contPoder++;
-        if (contPoder > 100){
+        if (contPoder > 125){
             b2 = false;
             contPoder = 0;
         }
