@@ -431,7 +431,7 @@ void telaInicial() {
     printf("               ");
 
     screenGotoxy(28, 12);
-    printf("                     ");
+    printf("                        ");
     screenGotoxy(28, 14);
     printf("                 ");
     screenGotoxy(28, 15);
