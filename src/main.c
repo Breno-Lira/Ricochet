@@ -30,7 +30,7 @@ int contBC = 0;
 int poderAleatorio = 0;
 
 int x = 40, y = 21;
-int incX = 0, incY = -1;
+int incX = 1, incY = -1;
 
 int x2 = 41, y2 = 20;
 int incX2 = 1, incY2 = -1;
@@ -113,14 +113,14 @@ int main()
             screenUpdate();
 
             if (modo == 2){
-                screenGotoxy(40,3);
+                screenGotoxy(36,2);
                 printf("Ilimitado rodada:                 ");
-                screenGotoxy(40,3);
-                printf("Ilimitado rodada: %d %d", rodada, contBC);
+                screenGotoxy(36,2);
+                printf("Ilimitado rodada: %d", rodada);
             }
             else{
-                screenGotoxy(40,3);
-                printf("Normal %d", modo);
+                screenGotoxy(40,2);
+                printf("Normal");
             }
 
             screenGotoxy(86,23);
